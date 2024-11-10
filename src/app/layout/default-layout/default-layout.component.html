@@ -1,0 +1,47 @@
+<!--sidebar-->
+<c-sidebar #sidebar1="cSidebar" class="d-print-none sidebar sidebar-fixed border-end" colorScheme="dark" id="sidebar1"
+  visible>
+  <c-sidebar-header class="border-bottom">
+    <div class="sidebar-brand d-flex align-items-center justify-content-center" style="height: 32px;">
+      <!-- Icono personalizado (cruz roja) -->
+      <div style="color: red; font-size: 32px; margin-right: 8px;">
+        <!-- Ejemplo usando SVG para representar una cruz, puedes personalizarlo -->
+        <svg width="32" height="32" viewBox="0 0 24 24">
+          <rect x="9" y="4" width="6" height="16" fill="red"></rect>
+          <rect x="4" y="9" width="16" height="6" fill="red"></rect>
+        </svg>
+      </div>
+      <!-- Texto MediCore -->
+      <span style="font-size: 24px; font-weight: bold; padding-top: 5px;">
+        MediCore
+      </span>
+    </div>
+  </c-sidebar-header>
+
+
+  <ng-scrollbar #scrollbar="ngScrollbar" (updated)="onScrollbarUpdate(scrollbar.state)" class="overflow"
+    pointerEventsMethod="scrollbar" visibility="hover">
+    <c-sidebar-nav #overflow [navItems]="navItems" dropdownMode="close" compact />
+  </ng-scrollbar>
+  @if (!sidebar1.narrow) {
+  <c-sidebar-footer cSidebarToggle="sidebar1" class="border-top d-none d-lg-flex" toggle="unfoldable"
+    style="cursor: pointer;">
+    <button cSidebarToggler aria-label="Toggle sidebar fold"></button>
+  </c-sidebar-footer>
+  }
+</c-sidebar>
+
+<!--main-->
+<div class="wrapper d-flex flex-column min-vh-100">
+  <!--app-header-->
+  <app-default-header [cShadowOnScroll]="'sm'" class="mb-4 d-print-none header header-sticky p-0 shadow-sm"
+    position="sticky" sidebarId="sidebar1" />
+  <!--app-body-->
+  <div class="body flex-grow-1">
+    <c-container breakpoint="lg" class="h-auto px-4">
+      <router-outlet />
+    </c-container>
+  </div>
+  <!--app footer-->
+  <app-default-footer />
+</div>

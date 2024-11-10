@@ -1,0 +1,73 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+  <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+    <c-toast-header>
+      {{ type === 'success' ? 'Éxito' : 'Error' }}
+    </c-toast-header>
+    <c-toast-body>
+      <strong>
+        {{ message }}
+      </strong>
+    </c-toast-body>
+  </c-toast>
+</c-toaster>
+<div class="container mt-4">
+  <div class="mb-3">
+    <button class="btn btn-secondary" routerLink="/patients">
+      <i class="bi bi-arrow-left"></i> Volver a Pacientes
+    </button>
+  </div>
+
+  <h2 class="mb-3">Registrar Paciente</h2>
+
+  <form (ngSubmit)="onSubmit()" #form="ngForm" novalidate>
+    <div class="row">
+      <!-- Datos del Usuario -->
+      <div class="col-md-6 mb-3">
+        <label for="username" class="form-label">Nombre de Usuario</label>
+        <input type="text" id="username" class="form-control" [(ngModel)]="user.username" name="username" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="email" class="form-label">Correo Electrónico</label>
+        <input type="email" id="email" class="form-control" [(ngModel)]="user.email" name="email" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" id="password" class="form-control" [(ngModel)]="user.password" name="password" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="repeatedPassword" class="form-label">Repetir Contraseña</label>
+        <input type="password" id="repeatedPassword" class="form-control" [(ngModel)]="user.repeatedPassword" name="repeatedPassword" required>
+      </div>
+      <div class="col-md-12 mb-3">
+        <label for="name" class="form-label">Nombre Completo</label>
+        <input type="text" id="name" class="form-control" [(ngModel)]="user.name" name="name" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Datos del Paciente -->
+      <div class="col-md-6 mb-3">
+        <label for="dateOfBirth" class="form-label">Fecha de Nacimiento</label>
+        <input type="date" id="dateOfBirth" class="form-control" [(ngModel)]="patient.dateOfBirth" name="dateOfBirth" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="gender" class="form-label">Género</label>
+        <select id="gender" class="form-select" [(ngModel)]="patient.gender" name="gender" required>
+          <option value="" disabled>Seleccione un género</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="phone" class="form-label">Teléfono</label>
+        <input type="text" id="phone" class="form-control" [(ngModel)]="patient.phone" name="phone" required>
+      </div>
+      <div class="col-md-12 mb-3">
+        <label for="address" class="form-label">Dirección</label>
+        <textarea id="address" class="form-control" [(ngModel)]="patient.address" name="address" rows="3" required></textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success" [disabled]="form.invalid">Registrar Paciente</button>
+  </form>
+</div>
