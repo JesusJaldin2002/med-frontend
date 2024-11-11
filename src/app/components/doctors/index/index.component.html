@@ -1,0 +1,106 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+    <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+      <c-toast-header>
+        Notificación
+      </c-toast-header>
+      <c-toast-body>
+        <strong>{{ message }}</strong>
+      </c-toast-body>
+    </c-toast>
+  </c-toaster>
+  
+  <c-modal id="deleteConfirmModal" [visible]="deleteModalVisible" (visibleChange)="deleteModalVisible = $event">
+    <c-modal-header>
+      <h5 cModalTitle>Confirmar Eliminación</h5>
+    </c-modal-header>
+    <c-modal-body>
+      ¿Estás seguro de que deseas eliminar este doctor?
+    </c-modal-body>
+    <c-modal-footer>
+      <button (click)="deleteModalVisible = false" cButton color="secondary">
+        Cancelar
+      </button>
+      <button (click)="performDeleteDoctor()" cButton color="primary">
+        Confirmar
+      </button>
+    </c-modal-footer>
+  </c-modal>
+  
+  <div class="container-fluid mt-4">
+    <!-- Input de búsqueda -->
+    <div class="mb-3">
+      <input type="text" class="form-control" placeholder="Buscar doctor..." [(ngModel)]="searchText"
+        (input)="filterDoctors()" />
+    </div>
+  
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="mb-0">Lista de Doctores</h2>
+      <button class="btn btn-primary" (click)="createDoctor()">
+        <i class="bi bi-plus-lg me-1"></i> Añadir Doctor
+      </button>
+    </div>
+  
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered">
+        <thead class="table-light text-center">
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Especialidad</th>
+            <th>Número de Licencia</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="filteredDoctors && filteredDoctors.length > 0; else noDoctors">
+          <tr *ngFor="let doctor of filteredDoctors">
+            <td>{{ doctor.idDoctor }}</td>
+            <td>{{ doctor.name }}</td>
+            <td>{{ doctor.username }}</td>
+            <td>{{ doctor.email }}</td>
+            <td>{{ doctor.specialty }}</td>
+            <td>{{ doctor.licenseNumber }}</td>
+            <td>{{ doctor.phone }}</td>
+            <td class="text-center">
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-primary" (click)="editDoctor(doctor.idDoctor)">
+                  <i class="bi bi-pencil"></i> Editar
+                </button>
+                <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-sm btn-outline-danger"
+                  (click)="confirmDeleteDoctor(doctor.idDoctor)">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="viewSchedules(doctor.idDoctor)">
+                  <i class="bi bi-calendar"></i> Ver Horarios
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Mensaje cuando no hay doctores -->
+      <ng-template #noDoctors>
+        <div class="text-center mt-4">
+          <p>No hay doctores registrados.</p>
+        </div>
+      </ng-template>
+    </div>
+  
+    <!-- Paginación alineada a la derecha -->
+    <div class="d-flex justify-content-end mt-2">
+      <c-pagination aria-label="Page navigation example" size="sm" align="end">
+        <li cPageItem [disabled]="currentPage === 1">
+          <a cPageLink (click)="onPageChange(currentPage - 1)" aria-label="Previous">&laquo;</a>
+        </li>
+        <li *ngFor="let page of getPages()" cPageItem [active]="currentPage === page">
+          <a cPageLink (click)="onPageChange(page)">{{ page }}</a>
+        </li>
+        <li cPageItem [disabled]="currentPage === getTotalPages()">
+          <a cPageLink (click)="onPageChange(currentPage + 1)" aria-label="Next">&raquo;</a>
+        </li>
+      </c-pagination>
+    </div>
+  </div>
+  

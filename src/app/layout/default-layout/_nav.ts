@@ -20,6 +20,15 @@ export const navItems: CustomNavData[] = [
     name: 'Sección de Doctores'
   },
   {
+    name: 'Doctores',
+    url: '/doctors',
+    iconComponent: { name: 'cil-medical-cross' },
+  },
+  {
+    title: true,
+    name: 'Sección de Pacientes'
+  },
+  {
     name: 'Pacientes',
     url: '/patients',
     iconComponent: { name: 'cil-user' },
@@ -28,15 +37,6 @@ export const navItems: CustomNavData[] = [
     name: 'Historias Clinicas',
     url: '/ejemplo-simple',
     iconComponent: { name: 'cil-description' }
-  },
-  {
-    title: true,
-    name: 'Sección de Pacientes'
-  },
-  {
-    name: 'Ejemplo Simple',
-    url: '/ejemplo-simple',
-    iconComponent: { name: 'cil-star' }
   },
   {
     title: true,

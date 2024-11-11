@@ -4,18 +4,14 @@
       <c-col md="6">
         <div class="clearfix">
           <h1 class="float-start display-3 me-4">404</h1>
-          <h4 class="pt-3">Oops! You're lost.</h4>
+          <h4 class="pt-3">Oops! Parece que estás perdido.</h4>
           <p class="text-body-secondary float-start">
-            The page you are looking for was not found.
+            La página que estás buscando no se encontró.
           </p>
         </div>
-        <c-input-group class="input-prepend">
-          <span cInputGroupText>
-            <svg cIcon name="cilMagnifyingGlass"></svg>
-          </span>
-          <input cFormControl placeholder="What are you looking for?" type="text" />
-          <button cButton color="info">Search</button>
-        </c-input-group>
+        <div class="text-center mt-4">
+          <c-button cButton color="primary" (click)="navigateToHome()">Ir a Inicio</c-button>
+        </div>
       </c-col>
     </c-row>
   </c-container>

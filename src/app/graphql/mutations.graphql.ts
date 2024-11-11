@@ -19,6 +19,7 @@ export const LOGOUT_MUTATION = gql`
   }
 `;
 
+// Patients
 export const REGISTER_PATIENT = gql`
   mutation RegisterPatient($patientInput: SavePatientInput!, $userInput: SaveUserInput!) {
     registerPatient(patientInput: $patientInput, userInput: $userInput) {
@@ -48,5 +49,67 @@ export const UPDATE_PATIENT = gql`
 export const DELETE_PATIENT = gql`
   mutation DeletePatient($patientId: Int!) {
     deletePatient(patientId: $patientId)
+  }
+`;
+
+// Doctors
+export const REGISTER_DOCTOR = gql`
+  mutation RegisterDoctor($doctorInput: SaveDoctorInput!, $userInput: SaveUserInput!) {
+    registerDoctor(doctorInput: $doctorInput, userInput: $userInput) {
+      id
+      specialty
+      licenseNumber
+      phone
+      userId
+    }
+  }
+`;
+
+export const UPDATE_DOCTOR = gql`
+  mutation UpdateDoctor($doctorId: Int!, $doctorInput: SaveDoctorInput!, $userInput: SaveUserInput!) {
+    updateDoctor(doctorId: $doctorId, doctorInput: $doctorInput, userInput: $userInput) {
+      id
+      specialty
+      licenseNumber
+      phone
+      userId
+    }
+  }
+`;
+
+export const DELETE_DOCTOR = gql`
+  mutation DeleteDoctor($doctorId: Int!) {
+    deleteDoctor(doctorId: $doctorId)
+  }
+`;
+
+// Schedules
+export const REGISTER_SCHEDULE = gql`
+  mutation RegisterSchedule($scheduleInput: SaveScheduleInput!) {
+    registerSchedule(scheduleInput: $scheduleInput) {
+      id
+      dayOfWeek
+      startTime
+      endTime
+      doctorId
+    }
+  }
+`;
+
+export const UPDATE_SCHEDULE = gql`
+  mutation UpdateSchedule($scheduleId: Int!, $scheduleInput: SaveScheduleInput!) {
+    updateSchedule(scheduleId: $scheduleId, scheduleInput: $scheduleInput) {
+      id
+      dayOfWeek
+      startTime
+      endTime
+      doctorId
+    }
+  }
+`;
+
+export const DELETE_SCHEDULE = gql`
+  mutation DeleteSchedule($scheduleId: Int!) {
+    deleteSchedule(scheduleId: $scheduleId)
   }
 `;

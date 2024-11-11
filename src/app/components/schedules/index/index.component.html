@@ -1,0 +1,103 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+    <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+      <c-toast-header>
+        Notificación
+      </c-toast-header>
+      <c-toast-body>
+        <strong>{{ message }}</strong>
+      </c-toast-body>
+    </c-toast>
+  </c-toaster>
+  
+  <c-modal id="deleteConfirmModal" [visible]="deleteModalVisible" (visibleChange)="deleteModalVisible = $event">
+    <c-modal-header>
+      <h5 cModalTitle>Confirmar Eliminación</h5>
+    </c-modal-header>
+    <c-modal-body>
+      ¿Estás seguro de que deseas eliminar este horario?
+    </c-modal-body>
+    <c-modal-footer>
+      <button (click)="deleteModalVisible = false" cButton color="secondary">
+        Cancelar
+      </button>
+      <button (click)="performDeleteSchedule()" cButton color="primary">
+        Confirmar
+      </button>
+    </c-modal-footer>
+  </c-modal>
+  
+  <div class="container-fluid mt-4">
+
+    <div class="mb-3">
+      <button class="btn btn-secondary" routerLink="/doctors">
+        <i class="bi bi-arrow-left"></i> Volver a Doctores
+      </button>
+    </div>
+    <!-- Input de búsqueda -->
+    <div class="mb-3">
+      <input type="text" class="form-control" placeholder="Buscar horario..." [(ngModel)]="searchText"
+        (input)="filterSchedules()" />
+    </div>
+  
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="mb-0">Lista de Horarios</h2>
+      <button class="btn btn-primary" (click)="createSchedule()">
+        <i class="bi bi-plus-lg me-1"></i> Añadir Horario
+      </button>
+    </div>
+  
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered">
+        <thead class="table-light text-center">
+          <tr>
+            <th>ID</th>
+            <th>Día de la Semana</th>
+            <th>Hora de Inicio</th>
+            <th>Hora de Fin</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="filteredSchedules && filteredSchedules.length > 0; else noSchedules">
+          <tr *ngFor="let schedule of filteredSchedules">
+            <td>{{ schedule.id }}</td>
+            <td>{{ schedule.dayOfWeek }}</td>
+            <td>{{ schedule.startTime }}</td>
+            <td>{{ schedule.endTime }}</td>
+            <td class="text-center">
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-primary" (click)="editSchedule(schedule.id)">
+                  <i class="bi bi-pencil"></i> Editar
+                </button>
+                <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-sm btn-outline-danger"
+                  (click)="confirmDeleteSchedule(schedule.id)">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Mensaje cuando no hay horarios -->
+      <ng-template #noSchedules>
+        <div class="text-center mt-4">
+          <p>No hay horarios registrados.</p>
+        </div>
+      </ng-template>
+    </div>
+  
+    <!-- Paginación alineada a la derecha -->
+    <div class="d-flex justify-content-end mt-2">
+      <c-pagination aria-label="Page navigation example" size="sm" align="end">
+        <li cPageItem [disabled]="currentPage === 1">
+          <a cPageLink (click)="onPageChange(currentPage - 1)" aria-label="Previous">&laquo;</a>
+        </li>
+        <li *ngFor="let page of getPages()" cPageItem [active]="currentPage === page">
+          <a cPageLink (click)="onPageChange(page)">{{ page }}</a>
+        </li>
+        <li cPageItem [disabled]="currentPage === getTotalPages()">
+          <a cPageLink (click)="onPageChange(currentPage + 1)" aria-label="Next">&raquo;</a>
+        </li>
+      </c-pagination>
+    </div>
+  </div>
+  

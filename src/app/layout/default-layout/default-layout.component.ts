@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
-import { IconDirective } from '@coreui/icons-angular';
+import { IconComponent, IconDirective, IconModule } from '@coreui/icons-angular';
 import {
   ContainerComponent,
   ShadowOnScrollDirective,
@@ -46,6 +46,8 @@ function isOverflown(element: HTMLElement) {
     ContainerComponent,
     RouterOutlet,
     DefaultFooterComponent,
+    IconModule,
+    IconComponent,
   ],
 })
 export class DefaultLayoutComponent {

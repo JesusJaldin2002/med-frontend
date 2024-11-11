@@ -2,6 +2,9 @@ import { Routes } from '@angular/router';
 import { DefaultLayoutComponent } from './layout';
 import { AuthGuard } from './guards/auth.guard';
 import { patientRoutes } from './components/patients/patients.route';
+import { doctorRoutes } from './components/doctors/doctors.route';
+import { scheduleRoutes } from './components/schedules/schedules.route';
+import { Page404Component } from './views/pages/page404/page404.component';
 
 export const routes: Routes = [
   {
@@ -37,7 +40,17 @@ export const routes: Routes = [
         children: patientRoutes,
         canActivate: [AuthGuard],
       },
+      {
+        path: 'doctors',
+        children: doctorRoutes,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'schedules',
+        children: scheduleRoutes,
+        canActivate: [AuthGuard],
+      },
     ],
   },
-  { path: '**', redirectTo: 'login' },
+  { path: '**', component: Page404Component },
 ];

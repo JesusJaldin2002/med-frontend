@@ -72,7 +72,7 @@
               </button>
 
               <!-- EJEMPLO DE COMO MANEJAR LOS ROLES EN VISTAS -->
-              <button *ngIf="role === 'ADMIN' || role === 'RECEPTIONIST'" class="btn btn-sm btn-outline-danger"
+              <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-sm btn-outline-danger"
                 (click)="confirmDeletePatient(patient.idPatient)">
                 <i class="bi bi-trash"></i> Eliminar
               </button>

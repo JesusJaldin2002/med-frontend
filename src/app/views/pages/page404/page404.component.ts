@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IconDirective } from '@coreui/icons-angular';
 import { ContainerComponent, RowComponent, ColComponent, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
+import { Router } from '@angular/router';
+
 
 @Component({
     selector: 'app-page404',
@@ -11,6 +13,10 @@ import { ContainerComponent, RowComponent, ColComponent, InputGroupComponent, In
 })
 export class Page404Component {
 
-  constructor() { }
+  constructor(private router: Router) {}
+
+  navigateToHome() {
+    this.router.navigate(['/']); // Navega a la ruta base o ajusta a la ruta de inicio de sesión
+  }
 
 }

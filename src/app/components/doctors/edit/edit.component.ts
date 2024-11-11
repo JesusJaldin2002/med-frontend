@@ -1,33 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { UPDATE_PATIENT } from '../../../graphql/mutations.graphql';
-import { GET_PATIENT_WITH_USER_BY_ID } from '../../../graphql/queries.graphql'; // Importa tu nueva consulta
+import { UPDATE_DOCTOR } from '../../../graphql/mutations.graphql';
+import { GET_DOCTOR_WITH_USER_BY_ID } from '../../../graphql/queries.graphql'; // Importa la consulta correspondiente
 import { ToastService } from '../../../services/toast.service';
 import { FormModule, ToastModule } from '@coreui/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit',
+  selector: 'app-edit-doctor',
   standalone: true,
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
   imports: [FormModule, CommonModule, FormsModule, RouterModule, ToastModule]
 })
 export class EditComponent implements OnInit {
-  patient: any = {
-    dateOfBirth: '',
-    gender: '',
-    phone: '',
-    address: ''
+  doctor: any = {
+    specialty: '',
+    licenseNumber: '',
+    phone: ''
   };
   user: any = {
     username: '',
     email: '',
     name: ''
   };
-  patientId: number | null = null;
+  doctorId: number | null = null;
 
   visible = false;
   message = '';
@@ -41,18 +40,18 @@ export class EditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.patientId = Number(this.route.snapshot.paramMap.get('id'));
-    if (this.patientId) {
-      this.loadPatientData(this.patientId);
+    this.doctorId = Number(this.route.snapshot.paramMap.get('id'));
+    if (this.doctorId) {
+      this.loadDoctorData(this.doctorId);
     }
   }
 
-  loadPatientData(patientId: number) {
+  loadDoctorData(doctorId: number) {
     const token = localStorage.getItem('token');
 
     this.apollo.query<any>({
-      query: GET_PATIENT_WITH_USER_BY_ID,
-      variables: { patientId },
+      query: GET_DOCTOR_WITH_USER_BY_ID,
+      variables: { doctorId },
       context: {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -61,29 +60,28 @@ export class EditComponent implements OnInit {
       fetchPolicy: 'network-only'
     }).subscribe({
       next: (result) => {
-        if (result.data && result.data.getPatientWithUserById) {
-          const patientData = result.data.getPatientWithUserById;
+        if (result.data && result.data.getDoctorWithUserById) {
+          const doctorData = result.data.getDoctorWithUserById;
           // Mapear los datos al modelo de tu componente
-          this.patient = {
-            dateOfBirth: patientData.dateOfBirth,
-            gender: patientData.gender,
-            phone: patientData.phone,
-            address: patientData.address
+          this.doctor = {
+            specialty: doctorData.specialty,
+            licenseNumber: doctorData.licenseNumber,
+            phone: doctorData.phone
           };
           this.user = {
-            username: patientData.username,
-            email: patientData.email,
-            name: patientData.name
+            username: doctorData.username,
+            email: doctorData.email,
+            name: doctorData.name
           };
         } else {
-          this.toastService.showToast('No se encontraron datos para este paciente', 'error');
-          this.router.navigate(['/patients']);
+          this.toastService.showToast('No se encontraron datos para este doctor', 'error');
+          this.router.navigate(['/doctors']);
         }
       },
       error: (error) => {
-        console.error('Error al cargar los datos del paciente', error);
-        this.toastService.showToast('Error al cargar los datos del paciente', 'error');
-        this.router.navigate(['/patients']);
+        console.error('Error al cargar los datos del doctor', error);
+        this.toastService.showToast('Error al cargar los datos del doctor', 'error');
+        this.router.navigate(['/doctors']);
       }
     });
   }
@@ -104,16 +102,15 @@ export class EditComponent implements OnInit {
       userInput.repeatedPassword = this.user.repeatedPassword;
     }
   
-    if (this.patientId !== null) {
+    if (this.doctorId !== null) {
       this.apollo.mutate({
-        mutation: UPDATE_PATIENT,
+        mutation: UPDATE_DOCTOR,
         variables: {
-          patientId: this.patientId,
-          patientInput: {
-            dateOfBirth: this.patient.dateOfBirth,
-            gender: this.patient.gender,
-            phone: this.patient.phone,
-            address: this.patient.address
+          doctorId: this.doctorId,
+          doctorInput: {
+            specialty: this.doctor.specialty,
+            licenseNumber: this.doctor.licenseNumber,
+            phone: this.doctor.phone
           },
           userInput: userInput
         },
@@ -124,13 +121,13 @@ export class EditComponent implements OnInit {
         },
       }).subscribe({
         next: () => {
-          this.toastService.showToast('Paciente actualizado exitosamente', 'success');
-          this.router.navigateByUrl('/patients', { state: { refresh: true } });
+          this.toastService.showToast('Doctor actualizado exitosamente', 'success');
+          this.router.navigateByUrl('/doctors', { state: { refresh: true } });
         },
         error: (err) => {
-          console.error('Error al actualizar el paciente', err);
+          console.error('Error al actualizar el doctor', err);
           this.visible = true;
-          this.message = `Error al actualizar el paciente: ${err.message}`;
+          this.message = `Error al actualizar el doctor: ${err.message}`;
           this.type = 'error';
           setTimeout(() => {
             this.visible = false;
@@ -139,6 +136,4 @@ export class EditComponent implements OnInit {
       });
     }
   }
-  
-  
 }

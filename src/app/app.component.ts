@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { delay, filter, map, tap } from 'rxjs/operators';
 
 import { ColorModeService } from '@coreui/angular';
@@ -12,7 +12,7 @@ import { iconSubset } from './icons/icon-subset';
   selector: 'app-root',
   template: '<router-outlet />',
   standalone: true,
-  imports: [RouterOutlet]
+  imports: [RouterOutlet, RouterModule]
 })
 export class AppComponent implements OnInit {
   title = 'MediCore';

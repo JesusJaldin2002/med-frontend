@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 
-export const patientRoutes: Routes = [
+export const doctorRoutes: Routes = [
   {
     path: '',
     data: {
-      title: 'Pacientes',
+      title: 'Doctores',
     },
     loadComponent: () =>
       import('./index/index.component').then((m) => m.IndexComponent),
@@ -16,7 +16,7 @@ export const patientRoutes: Routes = [
     loadComponent: () =>
       import('./create/create.component').then((m) => m.CreateComponent),
     data: {
-      title: 'Crear Paciente',
+      title: 'Crear Doctor',
     },
     canActivate: [AuthGuard],
   },
@@ -25,7 +25,7 @@ export const patientRoutes: Routes = [
     loadComponent: () =>
       import('./edit/edit.component').then((m) => m.EditComponent),
     data: {
-      title: 'Editar Paciente',
+      title: 'Editar Doctor',
     },
     canActivate: [AuthGuard],
   },

@@ -1,32 +1,32 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '../../guards/auth.guard';
 
-export const patientRoutes: Routes = [
+export const scheduleRoutes: Routes = [
   {
-    path: '',
+    path: ':doctorId',
     data: {
-      title: 'Pacientes',
+      title: 'Horarios del Doctor',
     },
     loadComponent: () =>
       import('./index/index.component').then((m) => m.IndexComponent),
     canActivate: [AuthGuard],
   },
   {
-    path: 'create',
+    path: 'create/:doctorId',
     loadComponent: () =>
       import('./create/create.component').then((m) => m.CreateComponent),
     data: {
-      title: 'Crear Paciente',
+      title: 'Crear Horario',
     },
     canActivate: [AuthGuard],
   },
   {
-    path: 'edit/:id',
+    path: 'edit/:scheduleId',
     loadComponent: () =>
       import('./edit/edit.component').then((m) => m.EditComponent),
     data: {
-      title: 'Editar Paciente',
+      title: 'Editar Horario',
     },
     canActivate: [AuthGuard],
-  },
+  }
 ];

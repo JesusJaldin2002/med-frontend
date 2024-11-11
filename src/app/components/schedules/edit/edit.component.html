@@ -1,0 +1,45 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+    <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+      <c-toast-header>
+        {{ type === 'success' ? 'Éxito' : 'Error' }}
+      </c-toast-header>
+      <c-toast-body>
+        <strong>
+          {{ message }}
+        </strong>
+      </c-toast-body>
+    </c-toast>
+  </c-toaster>
+  
+  <div class="container mt-4">
+    <div class="mb-3">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Volver a Horarios
+      </button>
+    </div>
+  
+    <h2 class="mb-3">Editar Horario</h2>
+  
+    <form (ngSubmit)="onSubmit()" #form="ngForm" novalidate>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="dayOfWeek" class="form-label">Día de la Semana</label>
+          <select id="dayOfWeek" class="form-select" [(ngModel)]="schedule.dayOfWeek" name="dayOfWeek" required>
+            <option value="" disabled>Seleccione un día</option>
+            <option *ngFor="let day of daysOfWeek" [value]="day">{{ day }}</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="startTime" class="form-label">Hora de Inicio</label>
+          <input type="time" id="startTime" class="form-control" [(ngModel)]="schedule.startTime" name="startTime" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="endTime" class="form-label">Hora de Fin</label>
+          <input type="time" id="endTime" class="form-control" [(ngModel)]="schedule.endTime" name="endTime" required>
+        </div>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Guardar Cambios</button>
+    </form>
+  </div>
+  
