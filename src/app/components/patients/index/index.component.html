@@ -35,7 +35,8 @@
 
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">Lista de Pacientes</h2>
-    <button class="btn btn-primary" (click)="createPatient()">
+    <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-primary"
+      (click)="createPatient()">
       <i class="bi bi-plus-lg me-1"></i> Añadir Paciente
     </button>
   </div>
@@ -46,7 +47,7 @@
         <tr>
           <th>ID</th>
           <th>Nombre</th>
-          <th>Usuario</th>
+          <th>CI</th>
           <th>Email</th>
           <th>Fecha de Nacimiento</th>
           <th>Género</th>
@@ -67,7 +68,8 @@
           <td>{{ patient.address }}</td>
           <td class="text-center">
             <div class="btn-group">
-              <button class="btn btn-sm btn-outline-primary" (click)="editPatient(patient.idPatient)">
+              <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-sm btn-outline-primary"
+                (click)="editPatient(patient.idPatient)">
                 <i class="bi bi-pencil"></i> Editar
               </button>
 
@@ -76,6 +78,19 @@
                 (click)="confirmDeletePatient(patient.idPatient)">
                 <i class="bi bi-trash"></i> Eliminar
               </button>
+
+              <ng-container *ngIf="medicalRecordsExistence[patient.idPatient]; else createRecordButton">
+                <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST' || role === 'DOCTOR'"
+                  class="btn btn-sm btn-outline-info" (click)="viewMedicalRecord(patient.idPatient)">
+                  <i class="bi bi-eye"></i> Ver Historia Clínica
+                </button>
+              </ng-container>
+              <ng-template #createRecordButton>
+                <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST' || role === 'DOCTOR'"
+                  class="btn btn-sm btn-outline-success" (click)="createMedicalRecord(patient.idPatient)">
+                  <i class="bi bi-file-medical"></i> Crear Historia Clínica
+                </button>
+              </ng-template>
             </div>
           </td>
         </tr>

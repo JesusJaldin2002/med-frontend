@@ -1,0 +1,107 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+  <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+    <c-toast-header>
+      Notificación
+    </c-toast-header>
+    <c-toast-body>
+      <strong>{{ message }}</strong>
+    </c-toast-body>
+  </c-toast>
+</c-toaster>
+
+<c-modal id="deleteConfirmModal" [visible]="deleteModalVisible" (visibleChange)="deleteModalVisible = $event">
+  <c-modal-header>
+    <h5 cModalTitle>Confirmar Eliminación</h5>
+  </c-modal-header>
+  <c-modal-body>
+    ¿Estás seguro de que deseas eliminar este registro médico?
+  </c-modal-body>
+  <c-modal-footer>
+    <button (click)="deleteModalVisible = false" cButton color="secondary">
+      Cancelar
+    </button>
+    <button (click)="performDeleteMedicalRecord()" cButton color="primary">
+      Confirmar
+    </button>
+  </c-modal-footer>
+</c-modal>
+
+<div class="container-fluid mt-4">
+
+  <!-- Input de búsqueda -->
+  <div class="mb-3">
+    <input type="text" class="form-control" placeholder="Buscar historias clínica..." [(ngModel)]="searchText"
+      (input)="filterMedicalRecords()" />
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Lista de Historias Clínicas</h2>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered">
+      <thead class="table-light text-center">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Alergias</th>
+          <th>Condiciones Crónicas</th>
+          <th>Medicamentos</th>
+          <th>Tipo de Sangre</th>
+          <th>Historial Familiar</th>
+          <th>Altura (m)</th>
+          <th>Peso (kg)</th>
+          <th>Historial de Vacunas</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="filteredMedicalRecords && filteredMedicalRecords.length > 0; else noRecords">
+        <tr *ngFor="let record of filteredMedicalRecords">
+          <td>{{ record.id }}</td>
+          <td>{{ record.patientName}}</td>
+          <td>{{ record.allergies }}</td>
+          <td>{{ record.chronicConditions }}</td>
+          <td>{{ record.medications }}</td>
+          <td>{{ record.bloodType }}</td>
+          <td>{{ record.familyHistory }}</td>
+          <td>{{ record.height }}</td>
+          <td>{{ record.weight }}</td>
+          <td>{{ record.vaccinationHistory }}</td>
+          <td class="text-center">
+            <div class="btn-group">
+              <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-sm btn-outline-primary"
+                (click)="editMedicalRecord(record.patientId)">
+                <i class="bi bi-pencil"></i> Editar
+              </button>
+              <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-sm btn-outline-danger"
+                (click)="confirmDeleteMedicalRecord(record.id)">
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- Mensaje cuando no hay historias clínicas -->
+    <ng-template #noRecords>
+      <div class="text-center mt-4">
+        <p>No hay historias clínicas disponibles.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Paginación alineada a la derecha -->
+  <div class="d-flex justify-content-end mt-2">
+    <c-pagination aria-label="Page navigation example" size="sm" align="end">
+      <li cPageItem [disabled]="currentPage === 1">
+        <a cPageLink (click)="onPageChange(currentPage - 1)" aria-label="Previous">&laquo;</a>
+      </li>
+      <li *ngFor="let page of getPages()" cPageItem [active]="currentPage === page">
+        <a cPageLink (click)="onPageChange(page)">{{ page }}</a>
+      </li>
+      <li cPageItem [disabled]="currentPage === getTotalPages()">
+        <a cPageLink (click)="onPageChange(currentPage + 1)" aria-label="Next">&raquo;</a>
+      </li>
+    </c-pagination>
+  </div>
+</div>

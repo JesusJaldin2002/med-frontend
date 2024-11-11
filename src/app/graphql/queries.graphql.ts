@@ -106,3 +106,38 @@ export const GET_SCHEDULE_BY_ID = gql`
     }
   }
 `;
+
+// Medical Records
+export const GET_ALL_MEDICAL_RECORDS = gql`
+  query GetAllMedicalRecords {
+    getAllMedicalRecords {
+      id
+      allergies
+      chronicConditions
+      medications
+      bloodType
+      familyHistory
+      height
+      weight
+      vaccinationHistory
+      patientId
+    }
+  }
+`;
+
+export const GET_MEDICAL_RECORD_BY_PATIENT = gql`
+  query GetMedicalRecordByPatient($patientId: Int!) {
+    getMedicalRecordByPatient(patientId: $patientId) {
+      id
+      allergies
+      chronicConditions
+      medications
+      bloodType
+      familyHistory
+      height
+      weight
+      vaccinationHistory
+      patientId
+    }
+  }
+`;

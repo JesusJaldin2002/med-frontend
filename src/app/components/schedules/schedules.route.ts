@@ -6,6 +6,7 @@ export const scheduleRoutes: Routes = [
     path: ':doctorId',
     data: {
       title: 'Horarios del Doctor',
+      roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR']
     },
     loadComponent: () =>
       import('./index/index.component').then((m) => m.IndexComponent),
@@ -17,6 +18,7 @@ export const scheduleRoutes: Routes = [
       import('./create/create.component').then((m) => m.CreateComponent),
     data: {
       title: 'Crear Horario',
+      roles: ['ADMINISTRATOR']
     },
     canActivate: [AuthGuard],
   },
@@ -26,6 +28,7 @@ export const scheduleRoutes: Routes = [
       import('./edit/edit.component').then((m) => m.EditComponent),
     data: {
       title: 'Editar Horario',
+      roles: ['ADMINISTRATOR']
     },
     canActivate: [AuthGuard],
   }

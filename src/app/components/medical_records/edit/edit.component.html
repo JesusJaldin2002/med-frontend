@@ -1,0 +1,62 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+    <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+      <c-toast-header>
+        {{ type === 'success' ? 'Éxito' : 'Error' }}
+      </c-toast-header>
+      <c-toast-body>
+        <strong>
+          {{ message }}
+        </strong>
+      </c-toast-body>
+    </c-toast>
+  </c-toaster>
+  
+  <div class="container mt-4">
+    <div class="mb-3">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Volver a Pacientes
+      </button>
+    </div>
+  
+    <h2 class="mb-3">Editar Historia Clínica</h2>
+  
+    <form (ngSubmit)="onSubmit()" #form="ngForm" novalidate>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="allergies" class="form-label">Alergias</label>
+          <input type="text" id="allergies" class="form-control" [(ngModel)]="medicalRecord.allergies" name="allergies">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="chronicConditions" class="form-label">Condiciones Crónicas</label>
+          <input type="text" id="chronicConditions" class="form-control" [(ngModel)]="medicalRecord.chronicConditions" name="chronicConditions">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="medications" class="form-label">Medicamentos</label>
+          <input type="text" id="medications" class="form-control" [(ngModel)]="medicalRecord.medications" name="medications">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="bloodType" class="form-label">Tipo de Sangre</label>
+          <input type="text" id="bloodType" class="form-control" [(ngModel)]="medicalRecord.bloodType" name="bloodType">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="familyHistory" class="form-label">Historial Familiar</label>
+          <textarea id="familyHistory" class="form-control" [(ngModel)]="medicalRecord.familyHistory" name="familyHistory" rows="3"></textarea>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="height" class="form-label">Altura (m)</label>
+          <input type="number" id="height" class="form-control" [(ngModel)]="medicalRecord.height" name="height" step="0.01">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="weight" class="form-label">Peso (kg)</label>
+          <input type="number" id="weight" class="form-control" [(ngModel)]="medicalRecord.weight" name="weight" step="0.01">
+        </div>
+        <div class="col-md-12 mb-3">
+          <label for="vaccinationHistory" class="form-label">Historial de Vacunas</label>
+          <textarea id="vaccinationHistory" class="form-control" [(ngModel)]="medicalRecord.vaccinationHistory" name="vaccinationHistory" rows="3"></textarea>
+        </div>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Guardar Cambios</button>
+    </form>
+  </div>
+  

@@ -41,7 +41,7 @@
   
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 class="mb-0">Lista de Horarios</h2>
-      <button class="btn btn-primary" (click)="createSchedule()">
+      <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-primary" (click)="createSchedule()">
         <i class="bi bi-plus-lg me-1"></i> Añadir Horario
       </button>
     </div>
@@ -54,7 +54,7 @@
             <th>Día de la Semana</th>
             <th>Hora de Inicio</th>
             <th>Hora de Fin</th>
-            <th>Acciones</th>
+            <th *ngIf="role === 'ADMINISTRATOR'">Acciones</th>
           </tr>
         </thead>
         <tbody *ngIf="filteredSchedules && filteredSchedules.length > 0; else noSchedules">
@@ -63,9 +63,9 @@
             <td>{{ schedule.dayOfWeek }}</td>
             <td>{{ schedule.startTime }}</td>
             <td>{{ schedule.endTime }}</td>
-            <td class="text-center">
+            <td class="text-center" *ngIf="role === 'ADMINISTRATOR'">
               <div class="btn-group">
-                <button class="btn btn-sm btn-outline-primary" (click)="editSchedule(schedule.id)">
+                <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-sm btn-outline-primary" (click)="editSchedule(schedule.id)">
                   <i class="bi bi-pencil"></i> Editar
                 </button>
                 <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-sm btn-outline-danger"

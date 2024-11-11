@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { VALIDATE_TOKEN } from '../graphql/queries.graphql';
 import { Observable, of } from 'rxjs';
@@ -30,20 +30,25 @@ export class AuthGuard implements CanActivate {
     }, 3000);
   }
 
-  canActivate(): Observable<boolean> {
+  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
 
-    console.log('Su rol actual es :', role);
     if (!token) {
-      // Token is not found, redirect and show a toast
       this.showToast('No se encontró token. Redirigiendo al login.');
       this.router.navigate(['/login']);
       return of(false);
     }
 
-    // console.log('Token encontrado:', token);
-    // Perform GraphQL query to validate the token
+    const allowedRoles = route.data['roles'] as string[]; // Obtiene los roles permitidos para la ruta
+    if (allowedRoles && !allowedRoles.includes(role || '')) {
+      // Si el rol del usuario no está permitido
+      this.showToast('Acceso denegado. No tienes permiso para acceder a esta ruta.');
+      this.router.navigate(['/not-authorized']); // Redirige a una página de "No autorizado"
+      return of(false);
+    }
+
+    // Valida el token si el rol es permitido
     return this.apollo
       .query({
         query: VALIDATE_TOKEN,
@@ -56,24 +61,15 @@ export class AuthGuard implements CanActivate {
       })
       .pipe(
         map((result: any) => {
-          console.log('Respuesta de validateToken:', result);
           if (result?.data?.validateToken) {
-            // Token is valid
-            console.log('Token válido');
-            
             return true;
           } else {
-            // Token is invalid
-            console.log('Token inválido, redirigiendo al login');
-            this.showToast(
-              'Sesión expirada. Por favor, inicie sesión nuevamente.'
-            );
+            this.showToast('Sesión expirada. Por favor, inicie sesión nuevamente.');
             this.router.navigate(['/login']);
             return false;
           }
         }),
         catchError((error) => {
-          // Handle errors gracefully
           console.error('Error en la validación del token:', error);
           this.showToast('Error de autenticación. Redirigiendo al login.');
           this.router.navigate(['/login']);

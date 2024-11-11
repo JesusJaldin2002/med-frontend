@@ -113,3 +113,44 @@ export const DELETE_SCHEDULE = gql`
     deleteSchedule(scheduleId: $scheduleId)
   }
 `;
+
+// Medical Records
+export const REGISTER_MEDICAL_RECORD = gql`
+  mutation RegisterMedicalRecord($medicalRecordInput: SaveMedicalRecordInput!) {
+    registerMedicalRecord(medicalRecordInput: $medicalRecordInput) {
+      id
+      allergies
+      chronicConditions
+      medications
+      bloodType
+      familyHistory
+      height
+      weight
+      vaccinationHistory
+      patientId
+    }
+  }
+`;
+
+export const UPDATE_MEDICAL_RECORD = gql`
+  mutation UpdateMedicalRecord($medicalRecordId: Int!, $medicalRecordInput: SaveMedicalRecordInput!) {
+    updateMedicalRecord(medicalRecordId: $medicalRecordId, medicalRecordInput: $medicalRecordInput) {
+      id
+      allergies
+      chronicConditions
+      medications
+      bloodType
+      familyHistory
+      height
+      weight
+      vaccinationHistory
+      patientId
+    }
+  }
+`;
+
+export const DELETE_MEDICAL_RECORD = gql`
+  mutation DeleteMedicalRecord($medicalRecordId: Int!) {
+    deleteMedicalRecord(medicalRecordId: $medicalRecordId)
+  }
+`;

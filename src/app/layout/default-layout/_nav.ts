@@ -11,43 +11,48 @@ export const navItems: CustomNavData[] = [
     iconComponent: { name: 'cil-speedometer' },
     badge: {
       color: 'info',
-      text: 'NEW'
+      text: 'NEW',
     },
-    roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR']
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST', 'DOCTOR'],
   },
   {
     title: true,
-    name: 'Sección de Doctores'
+    name: 'Sección de Doctores',
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST'],
   },
   {
     name: 'Doctores',
     url: '/doctors',
     iconComponent: { name: 'cil-medical-cross' },
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST'],
   },
   {
     title: true,
-    name: 'Sección de Pacientes'
+    name: 'Sección de Pacientes',
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST', 'DOCTOR'],
   },
   {
     name: 'Pacientes',
     url: '/patients',
     iconComponent: { name: 'cil-user' },
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST', 'DOCTOR'],
   },
   {
     name: 'Historias Clinicas',
-    url: '/ejemplo-simple',
-    iconComponent: { name: 'cil-description' }
+    url: '/medical-records',
+    iconComponent: { name: 'cil-description' },
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST']
   },
   {
     title: true,
-    name: 'Sección de Citas'
+    name: 'Sección de Citas',
   },
   {
     name: 'Ejemplo Simple',
     url: '/ejemplo-simple',
-    iconComponent: { name: 'cil-star' }
+    iconComponent: { name: 'cil-star' },
   },
-  
+
   {
     name: 'Dropdown Ejemplo',
     url: '/dropdown-ejemplo',
@@ -56,13 +61,13 @@ export const navItems: CustomNavData[] = [
       {
         name: 'Sub-Opción 1',
         url: '/dropdown-ejemplo/opcion1',
-        icon: 'nav-icon-bullet'
+        icon: 'nav-icon-bullet',
       },
       {
         name: 'Sub-Opción 2',
         url: '/dropdown-ejemplo/opcion2',
-        icon: 'nav-icon-bullet'
-      }
-    ]
+        icon: 'nav-icon-bullet',
+      },
+    ],
   },
 ];

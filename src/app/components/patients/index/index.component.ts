@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GET_ALL_PATIENTS } from '../../../graphql/queries.graphql';
+import { GET_ALL_PATIENTS, GET_MEDICAL_RECORD_BY_PATIENT } from '../../../graphql/queries.graphql'; // Asegúrate de importar la consulta
 import { DELETE_PATIENT } from '../../../graphql/mutations.graphql';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 export class IndexComponent implements OnInit, OnDestroy {
   patients: any[] = [];
   filteredPatients: any[] = []; // Lista filtrada de pacientes
+  medicalRecordsExistence: { [patientId: number]: boolean } = {}; // Almacena si un paciente tiene una historia clínica
   searchText: string = ''; // Texto de búsqueda
 
   totalPatients: number = 0;
@@ -44,9 +45,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-
     this.role = localStorage.getItem('role');
-
     this.loadPatients();
     if (history.state?.refresh) {
       this.patientsQuery?.refetch();
@@ -77,6 +76,33 @@ export class IndexComponent implements OnInit, OnDestroy {
         this.filteredPatients = [...this.patients];
         this.totalPatients = data.getAllPatients.length;
         this.updateCurrentPagePatients(this.filteredPatients);
+
+        // Verificar si cada paciente tiene una historia clínica
+        this.patients.forEach(patient => {
+          this.checkMedicalRecord(patient.idPatient);
+        });
+      }
+    );
+  }
+
+  checkMedicalRecord(patientId: number) {
+    const token = localStorage.getItem('token');
+
+    this.apollo.query<any>({
+      query: GET_MEDICAL_RECORD_BY_PATIENT,
+      variables: { patientId },
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    }).subscribe(
+      ({ data }) => {
+        this.medicalRecordsExistence[patientId] = !!data.getMedicalRecordByPatient;
+      },
+      (error) => {
+        console.error('Error al verificar la existencia de la historia clínica', error);
+        this.medicalRecordsExistence[patientId] = false; // Si hay un error, asumimos que no tiene
       }
     );
   }
@@ -168,6 +194,14 @@ export class IndexComponent implements OnInit, OnDestroy {
       this.deleteModalVisible = false;
       this.selectedPatientId = null;
     }
+  }
+
+  createMedicalRecord(patientId: number): void {
+    this.router.navigate(['/medical-records/create', patientId]);
+  }
+
+  viewMedicalRecord(patientId: number): void {
+    this.router.navigate(['/medical-records/show', patientId]);
   }
 
   ngOnDestroy(): void {

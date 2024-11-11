@@ -40,8 +40,6 @@ export class EditComponent implements OnInit {
     this.scheduleId = Number(this.route.snapshot.paramMap.get('scheduleId'));
     this.doctorId = Number(this.route.snapshot.paramMap.get('doctorId'));
 
-    this.toastService.showToast('Mensaje de prueba al iniciar', 'success');
-
     if (this.scheduleId) {
       this.loadScheduleData(this.scheduleId);
     } else {
