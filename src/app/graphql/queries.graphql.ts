@@ -6,6 +6,19 @@ export const VALIDATE_TOKEN = gql`
   }
 `;
 
+export const GET_MY_PROFILE = gql`
+  query FindMyProfile {
+    findMyProfile {
+      id
+      username
+      email
+      name
+      role
+      authorities
+    }
+  }
+`;
+
 // Patients
 export const GET_ALL_PATIENTS = gql`
   query GetAllPatients {

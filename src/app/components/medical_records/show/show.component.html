@@ -111,11 +111,11 @@
               </div>
               <div>
                 <!-- Botón de Editar -->
-                <button class="btn btn-sm btn-outline-primary me-2" (click)="editMedicalNote(note.id)">
+                <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-sm btn-outline-primary me-2" (click)="editMedicalNote(note.id)">
                   <i class="bi bi-pencil"></i> Editar
                 </button>
                 <!-- Botón de Eliminar -->
-                <button class="btn btn-sm btn-outline-danger" (click)="confirmDeleteMedicalNote(note.id)">
+                <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-sm btn-outline-danger" (click)="confirmDeleteMedicalNote(note.id)">
                   <i class="bi bi-trash"></i> Eliminar
                 </button>
               </div>

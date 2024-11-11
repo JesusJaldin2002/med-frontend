@@ -7,6 +7,38 @@
       <svg cIcon name="cilMenu" size="lg"></svg>
     </button>
 
+    <!-- Mostrar el nombre del usuario y el rol en el header -->
+    <div class="ms-4 d-flex align-items-center">
+      <!-- Nombre del Usuario -->
+      <div class="me-3">
+        <strong>{{ userName }} |</strong>
+      </div>
+      <!-- Rol del Usuario -->
+      <div>
+        <span><strong>Rol: </strong>
+          <ng-container *ngIf="userRole === 'ADMINISTRATOR'; else checkReceptionist">
+            Administrador
+          </ng-container>
+          <ng-template #checkReceptionist>
+            <ng-container *ngIf="userRole === 'RECEPTIONIST'; else checkDoctor">
+              Recepcionista
+            </ng-container>
+          </ng-template>
+          <ng-template #checkDoctor>
+            <ng-container *ngIf="userRole === 'DOCTOR'; else checkPatient">
+              Doctor
+            </ng-container>
+          </ng-template>
+          <ng-template #checkPatient>
+            <ng-container *ngIf="userRole === 'PATIENT'; else otherRole">
+              Paciente
+            </ng-container>
+          </ng-template>
+          <ng-template #otherRole>{{ userRole }}</ng-template>
+        </span>
+      </div>
+    </div>
+
     <!-- Botón para cambiar el tema (día/noche) -->
     <c-header-nav class="ms-auto mx-0">
       <ng-container *ngTemplateOutlet="themeDropdown" />
@@ -18,7 +50,7 @@
     </c-header-nav>
   </c-container>
 
-   <!-- Muestra la ruta actual -->
+  <!-- Muestra la ruta actual -->
 
   <!-- <c-container [fluid]="true" class="px-4">
     <c-breadcrumb-router />
@@ -33,8 +65,8 @@
 <ng-template #userDropdown>
   <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
     <button [caret]="false" cDropdownToggle class="py-0 pe-0" aria-label="Open user menu">
-      <c-avatar shape="rounded-1" [size]="'md'" src="./assets/images/avatars/user.png" status="success" textColor="primary"
-        alt="User avatar" />
+      <c-avatar shape="rounded-1" [size]="'md'" src="./assets/images/avatars/user.png" status="success"
+        textColor="primary" alt="User avatar" />
     </button>
     <ul cDropdownMenu class="pt-0 w-auto">
       <!-- Título Mi Cuenta -->

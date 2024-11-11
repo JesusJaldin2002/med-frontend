@@ -18,7 +18,7 @@ export const medicalNoteRoutes: Routes = [
       import('./edit/edit.component').then((m) => m.EditComponent),
     data: {
       title: 'Editar nota médica',
-      roles: ['ADMINISTRATOR', 'DOCTOR']
+      roles: ['ADMINISTRATOR']
     },
     canActivate: [AuthGuard],
   },

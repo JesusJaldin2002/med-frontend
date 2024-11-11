@@ -1,4 +1,4 @@
-import { NgTemplateOutlet } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -45,9 +45,11 @@ import { IconDirective } from '@coreui/icons-angular';
     DropdownHeaderDirective,
     DropdownItemDirective,
     DropdownDividerDirective,
+    CommonModule
   ],
 })
 export class DefaultHeaderComponent extends HeaderComponent {
+
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
 
@@ -67,8 +69,13 @@ export class DefaultHeaderComponent extends HeaderComponent {
     );
   });
 
+  userName: string | null = '';
+  userRole: string | null = '';
+
   constructor() {
     super();
+    this.userName = localStorage.getItem('name');
+    this.userRole = localStorage.getItem('role');
   }
 
   logout() {

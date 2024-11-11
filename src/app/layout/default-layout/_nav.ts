@@ -45,29 +45,36 @@ export const navItems: CustomNavData[] = [
   },
   {
     title: true,
-    name: 'Sección de Citas',
+    name: 'Sección de Atención',
   },
   {
-    name: 'Ejemplo Simple',
+    name: 'Citas',
+    url: '/appointments',
+    iconComponent: { name: 'cil-calendar' },
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST']
+  },
+  {
+    name: 'Consultas',
     url: '/ejemplo-simple',
-    iconComponent: { name: 'cil-star' },
+    iconComponent: { name: 'cil-notes' },
+    roles: ['ADMINISTRATOR', 'DOCTOR']
   },
 
-  {
-    name: 'Dropdown Ejemplo',
-    url: '/dropdown-ejemplo',
-    iconComponent: { name: 'cil-list' },
-    children: [
-      {
-        name: 'Sub-Opción 1',
-        url: '/dropdown-ejemplo/opcion1',
-        icon: 'nav-icon-bullet',
-      },
-      {
-        name: 'Sub-Opción 2',
-        url: '/dropdown-ejemplo/opcion2',
-        icon: 'nav-icon-bullet',
-      },
-    ],
-  },
+  // {
+  //   name: 'Dropdown Ejemplo',
+  //   url: '/dropdown-ejemplo',
+  //   iconComponent: { name: 'cil-list' },
+  //   children: [
+  //     {
+  //       name: 'Sub-Opción 1',
+  //       url: '/dropdown-ejemplo/opcion1',
+  //       icon: 'nav-icon-bullet',
+  //     },
+  //     {
+  //       name: 'Sub-Opción 2',
+  //       url: '/dropdown-ejemplo/opcion2',
+  //       icon: 'nav-icon-bullet',
+  //     },
+  //   ],
+  // },
 ];

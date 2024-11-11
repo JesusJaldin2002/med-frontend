@@ -17,6 +17,7 @@ import {
 } from '@coreui/angular';
 import { Apollo } from 'apollo-angular';
 import { Router } from '@angular/router';
+import { GET_MY_PROFILE } from 'src/app/graphql/queries.graphql';
 import { AUTHENTICATE_USER } from '../../../graphql/mutations.graphql';
 import { FormsModule } from '@angular/forms';
 
@@ -41,7 +42,7 @@ import { FormsModule } from '@angular/forms';
     ButtonDirective,
     NgStyle,
     CommonModule,
-    FormsModule
+    FormsModule,
   ],
 })
 export class LoginComponent {
@@ -84,7 +85,8 @@ export class LoginComponent {
           if (token) {
             localStorage.setItem('token', token);
             localStorage.setItem('role', role);
-          console.log('Role guardado:', role);
+            this.fetchUserProfile(token);
+            console.log('Role guardado:', role);
             console.log(token);
             this.username = '';
             this.password = '';
@@ -104,6 +106,30 @@ export class LoginComponent {
         },
         complete: () => {
           this.loading = false;
+        },
+      });
+  }
+
+  private fetchUserProfile(token: string) {
+    this.apollo
+      .query({
+        query: GET_MY_PROFILE,
+        context: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      })
+      .subscribe({
+        next: ({ data }: any) => {
+          const name = data?.findMyProfile?.name;
+          if (name) {
+            localStorage.setItem('name', name);
+          }
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          console.error('Error fetching user profile:', err);
         },
       });
   }
