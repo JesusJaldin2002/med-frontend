@@ -36,7 +36,17 @@
         </div>
         <div class="col-md-6 mb-3">
           <label for="bloodType" class="form-label">Tipo de Sangre</label>
-          <input type="text" id="bloodType" class="form-control" [(ngModel)]="medicalRecord.bloodType" name="bloodType">
+          <select id="bloodType" class="form-control" [(ngModel)]="medicalRecord.bloodType" name="bloodType" required>
+            <option value="" disabled selected>Seleccione un tipo de sangre</option>
+            <option value="O+">O Rh+</option>
+            <option value="O-">O Rh-</option>
+            <option value="A+">A Rh+</option>
+            <option value="A-">A Rh-</option>
+            <option value="B+">B Rh+</option>
+            <option value="B-">B Rh-</option>
+            <option value="AB+">AB Rh+</option>
+            <option value="AB-">AB Rh-</option>
+          </select>
         </div>
         <div class="col-md-6 mb-3">
           <label for="familyHistory" class="form-label">Historial Familiar</label>

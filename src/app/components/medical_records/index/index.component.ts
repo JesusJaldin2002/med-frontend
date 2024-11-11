@@ -198,6 +198,10 @@ export class IndexComponent implements OnInit, OnDestroy {
     }
   }
 
+  viewMedicalRecord(patientId: number): void {
+    this.router.navigate(['/medical-records/show', patientId]);
+  }
+
   ngOnDestroy(): void {
     this.querySubscription?.unsubscribe();
   }

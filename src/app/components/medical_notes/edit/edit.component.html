@@ -1,0 +1,42 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+    <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+      <c-toast-header>
+        {{ type === 'success' ? 'Éxito' : 'Error' }}
+      </c-toast-header>
+      <c-toast-body>
+        <strong>
+          {{ message }}
+        </strong>
+      </c-toast-body>
+    </c-toast>
+  </c-toaster>
+  
+  <div class="container mt-4">
+    <div class="mb-3">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Volver
+      </button>
+    </div>
+  
+    <h2 class="mb-3">Editar Nota Médica</h2>
+  
+    <form (ngSubmit)="onSubmit()" #form="ngForm" novalidate>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="noteType" class="form-label">Tipo de Nota</label>
+          <input type="text" id="noteType" class="form-control" [(ngModel)]="medicalNote.noteType" name="noteType" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="date" class="form-label">Fecha</label>
+          <input type="date" id="date" class="form-control" [(ngModel)]="medicalNote.date" name="date" required>
+        </div>
+        <div class="col-md-12 mb-3">
+          <label for="details" class="form-label">Detalles</label>
+          <textarea id="details" class="form-control" [(ngModel)]="medicalNote.details" name="details" rows="4" required></textarea>
+        </div>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Guardar Cambios</button>
+    </form>
+  </div>
+  

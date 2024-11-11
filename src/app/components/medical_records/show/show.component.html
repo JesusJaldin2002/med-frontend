@@ -1,77 +1,144 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+  <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+    <c-toast-header>
+      Notificación
+    </c-toast-header>
+    <c-toast-body>
+      <strong>{{ message }}</strong>
+    </c-toast-body>
+  </c-toast>
+</c-toaster>
+<!-- Modal de confirmación para eliminación -->
+<c-modal id="deleteConfirmModal" [visible]="deleteModalVisible" (visibleChange)="deleteModalVisible = $event">
+  <c-modal-header>
+    <h5 cModalTitle>Confirmar Eliminación</h5>
+  </c-modal-header>
+  <c-modal-body>
+    ¿Estás seguro de que deseas eliminar esta nota médica?
+  </c-modal-body>
+  <c-modal-footer>
+    <button (click)="deleteModalVisible = false" cButton color="secondary">
+      Cancelar
+    </button>
+    <button (click)="performDeleteMedicalNote()" cButton color="primary">
+      Confirmar
+    </button>
+  </c-modal-footer>
+</c-modal>
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <button class="btn btn-secondary" (click)="goBack()">
-        <i class="bi bi-arrow-left"></i> Volver a Pacientes
-      </button>
-      <button class="btn btn-primary" (click)="createMedicalNote()">
-        <i class="bi bi-file-earmark-plus"></i> Crear Nota Médica
-      </button>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <button class="btn btn-secondary" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i> Volver atrás
+    </button>
+    <button *ngIf="role === 'ADMINISTRATOR' || role === 'DOCTOR'" class="btn btn-primary" (click)="createMedicalNote()">
+      <i class="bi bi-file-earmark-plus"></i> Crear Nota Médica
+    </button>
+  </div>
+
+  <!-- Información de la Historia Clínica -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Historia Clínica</h4>
     </div>
-  
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Historia Clínica</h4>
-      </div>
-      <div class="card-body">
-        <div class="row mb-4">
-          <div class="col-md-12">
-            <h5 class="text-primary">Información del Paciente</h5>
-            <div class="row">
-              <div class="col-md-4">
-                <p><strong>Nombre:</strong> {{ patientData?.name }}</p>
-              </div>
-              <div class="col-md-4">
-                <p><strong>Fecha de Nacimiento:</strong> {{ patientData?.dateOfBirth }}</p>
-              </div>
-              <div class="col-md-4">
-                <p><strong>Género:</strong> {{ patientData?.gender }}</p>
-              </div>
+    <div class="card-body">
+      <!-- Información del Paciente -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h5 class="text-primary">Información del Paciente</h5>
+          <div class="row">
+            <div class="col-md-4">
+              <p><strong>Nombre:</strong> {{ patientData?.name }}</p>
             </div>
-          </div>
-        </div>
-  
-        <hr>
-  
-        <div class="row">
-          <div class="col-md-12">
-            <h5 class="text-primary">Detalles de la Historia Clínica</h5>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <p><strong>Alergias:</strong> {{ medicalRecord?.allergies || 'No especificado' }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p><strong>Condiciones Crónicas:</strong> {{ medicalRecord?.chronicConditions || 'No especificado' }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p><strong>Medicamentos:</strong> {{ medicalRecord?.medications || 'No especificado' }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p><strong>Tipo de Sangre:</strong> {{ medicalRecord?.bloodType || 'No especificado' }}</p>
-              </div>
-              <div class="col-md-12 mb-3">
-                <p><strong>Historial Familiar:</strong> {{ medicalRecord?.familyHistory || 'No especificado' }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p><strong>Altura:</strong> {{ medicalRecord?.height || 'No especificado' }} m</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p><strong>Peso:</strong> {{ medicalRecord?.weight || 'No especificado' }} kg</p>
-              </div>
-              <div class="col-md-12 mb-3">
-                <p><strong>Historial de Vacunas:</strong> {{ medicalRecord?.vaccinationHistory || 'No especificado' }}</p>
-              </div>
+            <div class="col-md-4">
+              <p><strong>Fecha de Nacimiento:</strong> {{ patientData?.dateOfBirth }}</p>
+            </div>
+            <div class="col-md-4">
+              <p><strong>Género:</strong> {{ patientData?.gender }}</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  
-    <div *ngIf="loading" class="text-center mt-4">
-      <p>Cargando...</p>
-    </div>
-  
-    <div *ngIf="!loading && (!medicalRecord || !patientData)" class="text-center mt-4">
-      <p>No se encontraron datos para este paciente.</p>
+
+      <hr>
+
+      <!-- Detalles de la Historia Clínica -->
+      <div class="row">
+        <div class="col-md-12">
+          <h5 class="text-primary">Detalles de la Historia Clínica</h5>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <p><strong>Alergias:</strong> {{ medicalRecord?.allergies || 'No especificado' }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <p><strong>Condiciones Crónicas:</strong> {{ medicalRecord?.chronicConditions || 'No especificado' }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <p><strong>Medicamentos:</strong> {{ medicalRecord?.medications || 'No especificado' }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <p><strong>Tipo de Sangre:</strong> {{ medicalRecord?.bloodType || 'No especificado' }}</p>
+            </div>
+            <div class="col-md-12 mb-3">
+              <p><strong>Historial Familiar:</strong> {{ medicalRecord?.familyHistory || 'No especificado' }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <p><strong>Altura:</strong> {{ medicalRecord?.height || 'No especificado' }} m</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <p><strong>Peso:</strong> {{ medicalRecord?.weight || 'No especificado' }} kg</p>
+            </div>
+            <div class="col-md-12 mb-3">
+              <p><strong>Historial de Vacunas:</strong> {{ medicalRecord?.vaccinationHistory || 'No especificado' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  
+
+  <!-- Sección de Notas Médicas -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+      <h4 class="mb-0">Notas Médicas</h4>
+    </div>
+    <div class="card-body" *ngIf="medicalNotes && medicalNotes.length > 0; else noNotes">
+      <div class="row">
+        <div *ngFor="let note of medicalNotes" class="col-md-12 mb-3">
+          <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ note.noteType }}</strong> - {{ note.date | date:'shortDate' }}
+              </div>
+              <div>
+                <!-- Botón de Editar -->
+                <button class="btn btn-sm btn-outline-primary me-2" (click)="editMedicalNote(note.id)">
+                  <i class="bi bi-pencil"></i> Editar
+                </button>
+                <!-- Botón de Eliminar -->
+                <button class="btn btn-sm btn-outline-danger" (click)="confirmDeleteMedicalNote(note.id)">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <p>{{ note.details }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noNotes>
+      <div class="text-center">
+        <p>No hay notas médicas registradas para esta historia clínica.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <div *ngIf="loading" class="text-center mt-4">
+    <p>Cargando...</p>
+  </div>
+
+  <div *ngIf="!loading && (!medicalRecord || !patientData)" class="text-center mt-4">
+    <p>No se encontraron datos para este paciente.</p>
+  </div>
+</div>

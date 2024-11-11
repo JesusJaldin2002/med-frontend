@@ -141,3 +141,57 @@ export const GET_MEDICAL_RECORD_BY_PATIENT = gql`
     }
   }
 `;
+
+export const GET_MEDICAL_RECORD_BY_ID = gql`
+  query GetMedicalRecordById($medicalRecordId: Int!) {
+    getMedicalRecordById(medicalRecordId: $medicalRecordId) {
+      id
+      allergies
+      chronicConditions
+      medications
+      bloodType
+      familyHistory
+      height
+      weight
+      vaccinationHistory
+      patientId
+    }
+  }
+`;
+
+// Medical Notes
+export const GET_ALL_MEDICAL_NOTES = gql`
+  query GetAllMedicalNotes {
+    getAllMedicalNotes {
+      id
+      noteType
+      details
+      date
+      medicalRecordId
+    }
+  }
+`;
+
+export const GET_MEDICAL_NOTES_BY_MEDICAL_RECORD = gql`
+  query GetMedicalNotesByMedicalRecord($medicalRecordId: Int!) {
+    getMedicalNotesByMedicalRecord(medicalRecordId: $medicalRecordId) {
+      id
+      noteType
+      details
+      date
+      medicalRecordId
+    }
+  }
+`;
+
+export const GET_MEDICAL_NOTE_BY_ID = gql`
+  query GetMedicalNoteById($medicalNoteId: Int!) {
+    getMedicalNoteById(medicalNoteId: $medicalNoteId) {
+      id
+      noteType
+      details
+      date
+      medicalRecordId
+    }
+  }
+`;

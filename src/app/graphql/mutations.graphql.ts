@@ -154,3 +154,34 @@ export const DELETE_MEDICAL_RECORD = gql`
     deleteMedicalRecord(medicalRecordId: $medicalRecordId)
   }
 `;
+
+// Medical Notes
+export const REGISTER_MEDICAL_NOTE = gql`
+  mutation RegisterMedicalNote($medicalNoteInput: SaveMedicalNoteInput!) {
+    registerMedicalNote(medicalNoteInput: $medicalNoteInput) {
+      id
+      noteType
+      details
+      date
+      medicalRecordId
+    }
+  }
+`;
+
+export const UPDATE_MEDICAL_NOTE = gql`
+  mutation UpdateMedicalNote($medicalNoteId: Int!, $medicalNoteInput: SaveMedicalNoteInput!) {
+    updateMedicalNote(medicalNoteId: $medicalNoteId, medicalNoteInput: $medicalNoteInput) {
+      id
+      noteType
+      details
+      date
+      medicalRecordId
+    }
+  }
+`;
+
+export const DELETE_MEDICAL_NOTE = gql`
+  mutation DeleteMedicalNote($medicalNoteId: Int!) {
+    deleteMedicalNote(medicalNoteId: $medicalNoteId)
+  }
+`;

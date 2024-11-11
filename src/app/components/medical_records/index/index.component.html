@@ -69,6 +69,10 @@
           <td>{{ record.vaccinationHistory }}</td>
           <td class="text-center">
             <div class="btn-group">
+              <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST' || role === 'DOCTOR'"
+                  class="btn btn-sm btn-outline-info" (click)="viewMedicalRecord(record.patientId)">
+                  <i class="bi bi-eye"></i> Mostrar
+                </button>
               <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-sm btn-outline-primary"
                 (click)="editMedicalRecord(record.patientId)">
                 <i class="bi bi-pencil"></i> Editar

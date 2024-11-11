@@ -101,7 +101,6 @@ export class IndexComponent implements OnInit, OnDestroy {
         this.medicalRecordsExistence[patientId] = !!data.getMedicalRecordByPatient;
       },
       (error) => {
-        console.error('Error al verificar la existencia de la historia clínica', error);
         this.medicalRecordsExistence[patientId] = false; // Si hay un error, asumimos que no tiene
       }
     );
