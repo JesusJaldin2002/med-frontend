@@ -33,10 +33,7 @@ import { IconDirective } from '@coreui/icons-angular';
     SidebarToggleDirective,
     IconDirective,
     HeaderNavComponent,
-    RouterLink,
-    RouterLinkActive,
     NgTemplateOutlet,
-    BreadcrumbRouterComponent,
     ThemeDirective,
     DropdownComponent,
     DropdownToggleDirective,
@@ -44,7 +41,6 @@ import { IconDirective } from '@coreui/icons-angular';
     DropdownMenuDirective,
     DropdownHeaderDirective,
     DropdownItemDirective,
-    DropdownDividerDirective,
     CommonModule
   ],
 })

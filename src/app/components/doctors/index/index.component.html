@@ -46,7 +46,7 @@
           <tr>
             <th>ID</th>
             <th>Nombre</th>
-            <th>Usuario</th>
+            <th>CI</th>
             <th>Email</th>
             <th>Especialidad</th>
             <th>Número de Licencia</th>
@@ -55,7 +55,7 @@
           </tr>
         </thead>
         <tbody *ngIf="filteredDoctors && filteredDoctors.length > 0; else noDoctors">
-          <tr *ngFor="let doctor of filteredDoctors">
+          <tr *ngFor="let doctor of paginatedDoctors">
             <td>{{ doctor.idDoctor }}</td>
             <td>{{ doctor.name }}</td>
             <td>{{ doctor.username }}</td>

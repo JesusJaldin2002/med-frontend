@@ -6,7 +6,7 @@ export const appointmentRoutes: Routes = [
     path: '',
     data: {
       title: 'Citas',
-      roles: ['ADMINISTRATOR', 'RECEPTIONIST']
+      roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
     },
     loadComponent: () =>
       import('./index/index.component').then((m) => m.IndexComponent),

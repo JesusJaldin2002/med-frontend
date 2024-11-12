@@ -208,3 +208,46 @@ export const GET_MEDICAL_NOTE_BY_ID = gql`
     }
   }
 `;
+
+// Appointments
+export const GET_ALL_APPOINTMENTS = gql`
+  query GetAllAppointments {
+    getAllAppointments {
+      id
+      date
+      time
+      status
+      reason
+      patientId
+      doctorId
+    }
+  }
+`;
+
+export const GET_APPOINTMENTS_BY_PATIENT = gql`
+  query GetAppointmentsByPatient($patientId: Int!) {
+    getAppointmentsByPatient(patientId: $patientId) {
+      id
+      date
+      time
+      status
+      reason
+      patientId
+      doctorId
+    }
+  }
+`;
+
+export const GET_APPOINTMENTS_BY_DOCTOR = gql`
+  query GetAppointmentsByDoctor($doctorId: Int!) {
+    getAppointmentsByDoctor(doctorId: $doctorId) {
+      id
+      date
+      time
+      status
+      reason
+      patientId
+      doctorId
+    }
+  }
+`;

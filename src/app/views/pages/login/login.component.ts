@@ -64,10 +64,10 @@ export class LoginComponent {
       this.errorMessage = 'Username and password are required';
       return;
     }
-
+  
     this.loading = true;
     this.errorMessage = '';
-
+  
     this.apollo
       .mutate({
         mutation: AUTHENTICATE_USER,
@@ -82,12 +82,27 @@ export class LoginComponent {
         next: ({ data }: any) => {
           const token = data?.authenticate?.jwt;
           const role = data?.authenticate?.role;
+          const doctorId = data?.authenticate?.doctorId;
+          const patientId = data?.authenticate?.patientId;
+  
           if (token) {
+            // Almacena el token y el rol
             localStorage.setItem('token', token);
             localStorage.setItem('role', role);
-            this.fetchUserProfile(token);
+  
+            // Almacena el ID correspondiente si el usuario es un Doctor o Paciente
+            if (role === 'DOCTOR' && doctorId) {
+              localStorage.setItem('doctorId', doctorId.toString());
+              console.log("Doctor ID guardado ", doctorId)
+            } else if (role === 'PATIENT' && patientId) {
+              localStorage.setItem('patientId', patientId.toString());
+              console.log("Paciente ID guardado ", patientId)
+            }
+  
             console.log('Role guardado:', role);
-            console.log(token);
+            console.log('Token guardado:', token);
+            
+            // Limpiar campos y redirigir
             this.username = '';
             this.password = '';
             this.router.navigate(['/dashboard']);

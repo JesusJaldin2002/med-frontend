@@ -33,9 +33,6 @@ function isOverflown(element: HTMLElement) {
   imports: [
     SidebarComponent,
     SidebarHeaderComponent,
-    SidebarBrandComponent,
-    RouterLink,
-    IconDirective,
     NgScrollbar,
     SidebarNavComponent,
     SidebarFooterComponent,
@@ -47,7 +44,6 @@ function isOverflown(element: HTMLElement) {
     RouterOutlet,
     DefaultFooterComponent,
     IconModule,
-    IconComponent,
   ],
 })
 export class DefaultLayoutComponent {

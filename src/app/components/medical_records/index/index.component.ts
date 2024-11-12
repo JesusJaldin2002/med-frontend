@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_ALL_MEDICAL_RECORDS, GET_PATIENT_WITH_USER_BY_ID } from '../../../graphql/queries.graphql';
 import { DELETE_MEDICAL_RECORD } from '../../../graphql/mutations.graphql';
@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 export class IndexComponent implements OnInit, OnDestroy {
   medicalRecords: any[] = [];
   filteredMedicalRecords: any[] = [];
+  paginatedMedicalRecords: any[] = [];
   searchText: string = '';
 
   totalRecords: number = 0;
@@ -41,7 +42,8 @@ export class IndexComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private router: Router,
     private route: ActivatedRoute,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef // Para forzar la detección de cambios
   ) {}
 
   ngOnInit(): void {
@@ -80,8 +82,8 @@ export class IndexComponent implements OnInit, OnDestroy {
         });
 
         this.filteredMedicalRecords = [...this.medicalRecords];
-        this.totalRecords = data.getAllMedicalRecords.length;
-        this.updateCurrentPageRecords(this.filteredMedicalRecords);
+        this.totalRecords = this.filteredMedicalRecords.length;
+        this.updateCurrentPageRecords(); // Actualizar la página actual
       },
       (error) => {
         console.error('Error al cargar los registros médicos', error);
@@ -107,11 +109,11 @@ export class IndexComponent implements OnInit, OnDestroy {
           ...record,
           patientName: data?.getPatientWithUserById?.name || 'No encontrado'
         };
-        // Crear un nuevo arreglo actualizando solo el registro modificado
         this.medicalRecords = this.medicalRecords.map(item =>
           item === record ? updatedRecord : item
         );
         this.filteredMedicalRecords = [...this.medicalRecords]; // Actualizar la lista filtrada
+        this.updateCurrentPageRecords(); // Actualizar la lista paginada después de obtener el nombre del paciente
       },
       (error) => {
         console.error('Error al obtener el nombre del paciente', error);
@@ -120,10 +122,10 @@ export class IndexComponent implements OnInit, OnDestroy {
           item === record ? updatedRecord : item
         );
         this.filteredMedicalRecords = [...this.medicalRecords]; // Actualizar la lista filtrada
+        this.updateCurrentPageRecords(); // Actualizar la lista paginada después del error
       }
     );
   }
-  
 
   filterMedicalRecords() {
     if (!this.searchText) {
@@ -135,20 +137,29 @@ export class IndexComponent implements OnInit, OnDestroy {
         )
       );
     }
-    this.updateCurrentPageRecords(this.filteredMedicalRecords);
+    this.currentPage = 1; // Restablecer a la primera página después de filtrar
+    this.totalRecords = this.filteredMedicalRecords.length; // Actualizar el total de registros después del filtrado
+    this.updateCurrentPageRecords(); // Actualizar la lista paginada
   }
 
-  updateCurrentPageRecords(allRecords: any[] = []) {
-    this.filteredMedicalRecords = allRecords.slice(
-      (this.currentPage - 1) * this.itemsPerPage,
-      this.currentPage * this.itemsPerPage
-    );
+  updateCurrentPageRecords() {
+    if (this.filteredMedicalRecords.length === 0) {
+      this.paginatedMedicalRecords = [];
+    } else {
+      this.paginatedMedicalRecords = this.filteredMedicalRecords.slice(
+        (this.currentPage - 1) * this.itemsPerPage,
+        this.currentPage * this.itemsPerPage
+      );
+    }
+    this.cdr.detectChanges(); // Forzar la detección de cambios
   }
 
   onPageChange(page: number) {
     if (page > 0 && page <= this.getTotalPages()) {
       this.currentPage = page;
-      this.updateCurrentPageRecords(this.filteredMedicalRecords);
+      this.updateCurrentPageRecords();
+    } else {
+      console.warn('Invalid page change requested.');
     }
   }
 

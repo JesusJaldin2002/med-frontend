@@ -58,7 +58,7 @@
           </tr>
         </thead>
         <tbody *ngIf="filteredSchedules && filteredSchedules.length > 0; else noSchedules">
-          <tr *ngFor="let schedule of filteredSchedules">
+          <tr *ngFor="let schedule of paginatedSchedules">
             <td>{{ schedule.id }}</td>
             <td>{{ schedule.dayOfWeek }}</td>
             <td>{{ schedule.startTime }}</td>

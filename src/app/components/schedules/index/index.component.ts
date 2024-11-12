@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_SCHEDULES_BY_DOCTOR } from '../../../graphql/queries.graphql';
 import { DELETE_SCHEDULE } from '../../../graphql/mutations.graphql';
@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 export class IndexComponent implements OnInit, OnDestroy {
   schedules: any[] = [];
   filteredSchedules: any[] = [];
+  paginatedSchedules: any[] = [];
   searchText: string = '';
 
   totalSchedules: number = 0;
@@ -43,7 +44,8 @@ export class IndexComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private router: Router,
     private route: ActivatedRoute,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef // Para forzar la detección de cambios
   ) {}
 
   ngOnInit(): void {
@@ -85,8 +87,8 @@ export class IndexComponent implements OnInit, OnDestroy {
         this.schedules = data.getSchedulesByDoctor;
         this.filteredSchedules = [...this.schedules];
         this.sortSchedules(); // Ordena los horarios
-        this.totalSchedules = data.getSchedulesByDoctor.length;
-        this.updateCurrentPageSchedules(this.filteredSchedules);
+        this.totalSchedules = this.filteredSchedules.length;
+        this.updateCurrentPageSchedules(); // Actualizar la página actual
       },
       (error) => {
         console.error('Error al cargar los horarios', error);
@@ -117,20 +119,29 @@ export class IndexComponent implements OnInit, OnDestroy {
       );
     }
     this.sortSchedules();
-    this.updateCurrentPageSchedules(this.filteredSchedules);
+    this.currentPage = 1; // Restablecer a la primera página después de filtrar
+    this.totalSchedules = this.filteredSchedules.length; // Actualizar el total de registros después del filtrado
+    this.updateCurrentPageSchedules(); // Actualizar la lista paginada
   }
 
-  updateCurrentPageSchedules(allSchedules: any[] = []) {
-    this.filteredSchedules = allSchedules.slice(
-      (this.currentPage - 1) * this.itemsPerPage,
-      this.currentPage * this.itemsPerPage
-    );
+  updateCurrentPageSchedules() {
+    if (this.filteredSchedules.length === 0) {
+      this.paginatedSchedules = [];
+    } else {
+      this.paginatedSchedules = this.filteredSchedules.slice(
+        (this.currentPage - 1) * this.itemsPerPage,
+        this.currentPage * this.itemsPerPage
+      );
+    }
+    this.cdr.detectChanges(); // Forzar la detección de cambios
   }
 
   onPageChange(page: number) {
     if (page > 0 && page <= this.getTotalPages()) {
       this.currentPage = page;
-      this.updateCurrentPageSchedules(this.filteredSchedules);
+      this.updateCurrentPageSchedules();
+    } else {
+      console.warn('Invalid page change requested.');
     }
   }
 

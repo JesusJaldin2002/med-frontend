@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_ALL_DOCTORS } from '../../../graphql/queries.graphql';
 import { DELETE_DOCTOR } from '../../../graphql/mutations.graphql';
@@ -25,6 +25,7 @@ import { FormsModule } from '@angular/forms';
 export class IndexComponent implements OnInit, OnDestroy {
   doctors: any[] = [];
   filteredDoctors: any[] = []; // Lista filtrada de doctores
+  paginatedDoctors: any[] = []; // Lista paginada de doctores
   searchText: string = ''; // Texto de búsqueda
 
   totalDoctors: number = 0;
@@ -46,7 +47,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef // Para forzar la detección de cambios
   ) {}
 
   ngOnInit(): void {
@@ -79,8 +81,8 @@ export class IndexComponent implements OnInit, OnDestroy {
         this.loading = loading;
         this.doctors = data.getAllDoctors;
         this.filteredDoctors = [...this.doctors];
-        this.totalDoctors = data.getAllDoctors.length;
-        this.updateCurrentPageDoctors(this.filteredDoctors);
+        this.totalDoctors = this.filteredDoctors.length; // Total de doctores basado en resultados filtrados
+        this.updateCurrentPageDoctors(); // Actualizar la página actual
       }
     );
   }
@@ -95,25 +97,37 @@ export class IndexComponent implements OnInit, OnDestroy {
         )
       );
     }
-    this.updateCurrentPageDoctors(this.filteredDoctors);
+    this.currentPage = 1; // Restablecer a la primera página después de filtrar
+    this.totalDoctors = this.filteredDoctors.length; // Actualizar el total de doctores después del filtrado
+    this.updateCurrentPageDoctors(); // Actualizar la página actual
   }
 
-  updateCurrentPageDoctors(allDoctors: any[] = []) {
-    this.filteredDoctors = allDoctors.slice(
-      (this.currentPage - 1) * this.itemsPerPage,
-      this.currentPage * this.itemsPerPage
-    );
+  updateCurrentPageDoctors() {
+    if (this.filteredDoctors.length === 0) {
+      this.paginatedDoctors = [];
+    } else {
+      this.paginatedDoctors = this.filteredDoctors.slice(
+        (this.currentPage - 1) * this.itemsPerPage,
+        this.currentPage * this.itemsPerPage
+      );
+    }
+    
+    this.cdr.detectChanges(); // Forzar la detección de cambios
   }
 
   onPageChange(page: number) {
+    
     if (page > 0 && page <= this.getTotalPages()) {
       this.currentPage = page;
-      this.updateCurrentPageDoctors(this.filteredDoctors);
+      this.updateCurrentPageDoctors();
+    } else {
+      console.warn('Invalid page change requested.');
     }
   }
 
   getPages(): number[] {
     const totalPages = this.getTotalPages();
+    
     return Array(totalPages)
       .fill(0)
       .map((_, index) => index + 1);

@@ -51,7 +51,7 @@ export const navItems: CustomNavData[] = [
     name: 'Citas',
     url: '/appointments',
     iconComponent: { name: 'cil-calendar' },
-    roles: ['ADMINISTRATOR', 'RECEPTIONIST']
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
   },
   {
     name: 'Consultas',

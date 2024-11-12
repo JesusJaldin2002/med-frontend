@@ -7,6 +7,8 @@ export const AUTHENTICATE_USER = gql`
     authenticate(input: $input) {
       jwt
       role
+      doctorId
+      patientId
     }
   }
 `;
@@ -183,5 +185,40 @@ export const UPDATE_MEDICAL_NOTE = gql`
 export const DELETE_MEDICAL_NOTE = gql`
   mutation DeleteMedicalNote($medicalNoteId: Int!) {
     deleteMedicalNote(medicalNoteId: $medicalNoteId)
+  }
+`;
+
+// Appointments
+export const REGISTER_APPOINTMENT = gql`
+  mutation RegisterAppointment($appointmentInput: SaveAppointmentInput!) {
+    registerAppointment(appointmentInput: $appointmentInput) {
+      id
+      date
+      time
+      status
+      reason
+      patientId
+      doctorId
+    }
+  }
+`;
+
+export const UPDATE_APPOINTMENT = gql`
+  mutation UpdateAppointment($appointmentId: Int!, $appointmentInput: AppointmentInput!) {
+    updateAppointment(appointmentId: $appointmentId, appointmentInput: $appointmentInput) {
+      id
+      date
+      time
+      status
+      reason
+      patientId
+      doctorId
+    }
+  }
+`;
+
+export const DELETE_APPOINTMENT = gql`
+  mutation DeleteAppointment($appointmentId: Int!) {
+    deleteAppointment(appointmentId: $appointmentId)
   }
 `;

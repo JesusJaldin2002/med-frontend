@@ -57,7 +57,7 @@
         </tr>
       </thead>
       <tbody *ngIf="filteredPatients && filteredPatients.length > 0; else noPatients">
-        <tr *ngFor="let patient of filteredPatients">
+        <tr *ngFor="let patient of paginatedPatients">
           <td>{{ patient.idPatient }}</td>
           <td>{{ patient.name }}</td>
           <td>{{ patient.username }}</td>
@@ -104,18 +104,18 @@
     </ng-template>
   </div>
 
-  <!-- Paginación alineada a la derecha -->
-  <div class="d-flex justify-content-end mt-2">
-    <c-pagination aria-label="Page navigation example" size="sm" align="end">
-      <li cPageItem [disabled]="currentPage === 1">
-        <a cPageLink (click)="onPageChange(currentPage - 1)" aria-label="Previous">&laquo;</a>
-      </li>
-      <li *ngFor="let page of getPages()" cPageItem [active]="currentPage === page">
-        <a cPageLink (click)="onPageChange(page)">{{ page }}</a>
-      </li>
-      <li cPageItem [disabled]="currentPage === getTotalPages()">
-        <a cPageLink (click)="onPageChange(currentPage + 1)" aria-label="Next">&raquo;</a>
-      </li>
-    </c-pagination>
-  </div>
+<!-- Paginación -->
+<div class="d-flex justify-content-end mt-2">
+  <c-pagination aria-label="Page navigation example" size="sm" align="end">
+    <li cPageItem [disabled]="currentPage === 1">
+      <a cPageLink (click)="onPageChange(currentPage - 1)" aria-label="Previous">&laquo;</a>
+    </li>
+    <li *ngFor="let page of getPages()" cPageItem [active]="currentPage === page">
+      <a cPageLink (click)="onPageChange(page)">{{ page }}</a>
+    </li>
+    <li cPageItem [disabled]="currentPage === getTotalPages()">
+      <a cPageLink (click)="onPageChange(currentPage + 1)" aria-label="Next">&raquo;</a>
+    </li>
+  </c-pagination>
+</div>
 </div>

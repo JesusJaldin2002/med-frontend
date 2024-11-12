@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GET_ALL_PATIENTS, GET_MEDICAL_RECORD_BY_PATIENT } from '../../../graphql/queries.graphql'; // Asegúrate de importar la consulta
+import { GET_ALL_PATIENTS, GET_MEDICAL_RECORD_BY_PATIENT } from '../../../graphql/queries.graphql';
 import { DELETE_PATIENT } from '../../../graphql/mutations.graphql';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -18,9 +18,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class IndexComponent implements OnInit, OnDestroy {
   patients: any[] = [];
-  filteredPatients: any[] = []; // Lista filtrada de pacientes
-  medicalRecordsExistence: { [patientId: number]: boolean } = {}; // Almacena si un paciente tiene una historia clínica
-  searchText: string = ''; // Texto de búsqueda
+  filteredPatients: any[] = [];
+  paginatedPatients: any[] = [];
+  medicalRecordsExistence: { [patientId: number]: boolean } = {};
+  searchText: string = '';
 
   totalPatients: number = 0;
   currentPage: number = 1;
@@ -33,15 +34,16 @@ export class IndexComponent implements OnInit, OnDestroy {
   private patientsQuery: QueryRef<any> | undefined;
   private querySubscription: Subscription | undefined;
 
-  selectedPatientId: number | null = null; // Para almacenar el ID del paciente a eliminar
-  deleteModalVisible: boolean = false; // Para controlar la visibilidad del modal
+  selectedPatientId: number | null = null;
+  deleteModalVisible: boolean = false;
 
   role: string | null = null;
 
   constructor(
     private apollo: Apollo,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef // Forzar la detección de cambios
   ) {}
 
   ngOnInit(): void {
@@ -72,15 +74,18 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.querySubscription = this.patientsQuery.valueChanges.subscribe(
       ({ data, loading }) => {
         this.loading = loading;
-        this.patients = data.getAllPatients;
+        this.patients = data?.getAllPatients || [];
         this.filteredPatients = [...this.patients];
-        this.totalPatients = data.getAllPatients.length;
-        this.updateCurrentPagePatients(this.filteredPatients);
+        this.totalPatients = this.filteredPatients.length; // Actualizar el total de pacientes basado en los resultados filtrados
+        this.updateCurrentPagePatients();
 
-        // Verificar si cada paciente tiene una historia clínica
+        // Verificar si los pacientes tienen una historia clínica
         this.patients.forEach(patient => {
           this.checkMedicalRecord(patient.idPatient);
         });
+      },
+      (error) => {
+        console.error('Error fetching patients:', error);
       }
     );
   }
@@ -98,40 +103,49 @@ export class IndexComponent implements OnInit, OnDestroy {
       },
     }).subscribe(
       ({ data }) => {
-        this.medicalRecordsExistence[patientId] = !!data.getMedicalRecordByPatient;
+        this.medicalRecordsExistence[patientId] = !!data?.getMedicalRecordByPatient;
+        console.log(`Medical record existence for patient ${patientId}:`, this.medicalRecordsExistence[patientId]);
       },
-      (error) => {
-        this.medicalRecordsExistence[patientId] = false; // Si hay un error, asumimos que no tiene
+      () => {
+        this.medicalRecordsExistence[patientId] = false;
+        console.log(`Medical record existence for patient ${patientId}:`, this.medicalRecordsExistence[patientId]);
       }
     );
   }
 
   filterPatients() {
     if (!this.searchText) {
-      // Si el texto de búsqueda está vacío, restaurar todos los pacientes
       this.filteredPatients = [...this.patients];
     } else {
-      // Filtra los pacientes según el texto de búsqueda
       this.filteredPatients = this.patients.filter(patient =>
         Object.values(patient).some(value =>
           String(value).toLowerCase().includes(this.searchText.toLowerCase())
         )
       );
     }
-    this.updateCurrentPagePatients(this.filteredPatients);
+    this.currentPage = 1; // Restablecer a la primera página
+    this.totalPatients = this.filteredPatients.length; // Actualizar el total de pacientes después del filtrado
+    this.updateCurrentPagePatients();
   }
 
-  updateCurrentPagePatients(allPatients: any[] = []) {
-    this.filteredPatients = allPatients.slice(
-      (this.currentPage - 1) * this.itemsPerPage,
-      this.currentPage * this.itemsPerPage
-    );
+  updateCurrentPagePatients() {
+    if (this.filteredPatients.length === 0) {
+      this.paginatedPatients = [];
+    } else {
+      this.paginatedPatients = this.filteredPatients.slice(
+        (this.currentPage - 1) * this.itemsPerPage,
+        this.currentPage * this.itemsPerPage
+      );
+    }
+    this.cdr.detectChanges(); // Forzar la detección de cambios
   }
 
   onPageChange(page: number) {
     if (page > 0 && page <= this.getTotalPages()) {
       this.currentPage = page;
-      this.updateCurrentPagePatients(this.filteredPatients);
+      this.updateCurrentPagePatients();
+    } else {
+      console.warn('Invalid page change requested.');
     }
   }
 
@@ -154,13 +168,11 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.router.navigate(['/patients/edit', id]);
   }
 
-  // Método para mostrar el modal de confirmación
   confirmDeletePatient(id: number): void {
     this.selectedPatientId = id;
     this.deleteModalVisible = true;
   }
 
-  // Método para manejar la eliminación confirmada
   performDeletePatient(): void {
     if (this.selectedPatientId !== null) {
       const token = localStorage.getItem('token');
@@ -189,7 +201,6 @@ export class IndexComponent implements OnInit, OnDestroy {
           },
         });
 
-      // Cierra el modal después de eliminar
       this.deleteModalVisible = false;
       this.selectedPatientId = null;
     }

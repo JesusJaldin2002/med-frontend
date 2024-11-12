@@ -1,1 +1,73 @@
-<p>create works!</p>
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+  <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+    <c-toast-header>{{ type === 'success' ? 'Éxito' : 'Error' }}</c-toast-header>
+    <c-toast-body><strong>{{ message }}</strong></c-toast-body>
+  </c-toast>
+</c-toaster>
+
+<div class="container mt-4">
+  <div class="mb-3">
+    <button class="btn btn-secondary" (click)="navigateToAppointments()">
+      <i class="bi bi-arrow-left"></i> Volver a Citas
+    </button>
+  </div>
+
+  <h2 class="mb-3">Registrar Cita</h2>
+
+  <form (ngSubmit)="onSubmit()" #form="ngForm" novalidate>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="searchPatient" class="form-label">Buscar Paciente</label>
+        <input type="text" id="searchPatient" class="form-control" [(ngModel)]="searchPatient" (input)="filterPatients()" placeholder="Buscar por nombre o username" [ngModelOptions]="{standalone: true}">
+        <label for="patientId" class="form-label mt-2">Paciente</label>
+        <select id="patientId" class="form-select" [(ngModel)]="appointment.patientId" name="patientId" required>
+          <option value="" disabled>Seleccione un paciente</option>
+          <option *ngFor="let patient of filteredPatients" [value]="patient.idPatient">{{ patient.name }} ({{ patient.username }})</option>
+        </select>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="searchDoctor" class="form-label">Buscar Doctor</label>
+        <input type="text" id="searchDoctor" class="form-control" [(ngModel)]="searchDoctor" (input)="filterDoctors()" placeholder="Buscar por nombre o especialidad" [ngModelOptions]="{standalone: true}">
+        <label for="doctorId" class="form-label mt-2">Doctor</label>
+        <select id="doctorId" class="form-select" [(ngModel)]="appointment.doctorId" name="doctorId" (change)="onDoctorChange()" required>
+          <option value="" disabled>Seleccione un doctor</option>
+          <option *ngFor="let doctor of filteredDoctors" [value]="doctor.idDoctor">{{ doctor.name }} - {{ doctor.specialty }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-6 mb-3" *ngIf="schedules.length > 0">
+        <label for="schedule" class="form-label">Horario</label>
+        <select id="schedule" class="form-select" (change)="onScheduleChange($event)">
+          <option value="" disabled>Seleccione un horario</option>
+          <option *ngFor="let schedule of schedules" [value]="schedule.dayOfWeek + ' ' + schedule.startTime + ' - ' + schedule.endTime">
+            {{ schedule.dayOfWeek }} {{ schedule.startTime }} - {{ schedule.endTime }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-6 mb-3" *ngIf="suggestedDates.length > 0">
+        <label for="date" class="form-label">Fecha</label>
+        <select id="date" class="form-select" [(ngModel)]="appointment.date" name="date" required>
+          <option value="" disabled>Seleccione una fecha</option>
+          <option *ngFor="let date of suggestedDates">{{ date }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-6 mb-3" *ngIf="availableTimes.length > 0">
+        <label for="time" class="form-label">Hora</label>
+        <select id="time" class="form-select" [(ngModel)]="appointment.time" name="time" required>
+          <option value="" disabled>Seleccione una hora</option>
+          <option *ngFor="let time of availableTimes">{{ time }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-12 mb-3">
+        <label for="reason" class="form-label">Motivo</label>
+        <input type="text" id="reason" class="form-control" [(ngModel)]="appointment.reason" name="reason" required>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success" [disabled]="form.invalid">Registrar Cita</button>
+  </form>
+</div>
