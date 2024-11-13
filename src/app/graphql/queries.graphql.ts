@@ -83,6 +83,28 @@ export const GET_DOCTOR_WITH_USER_BY_ID = gql`
   }
 `;
 
+export const GET_ALL_DOCTORS_WITH_SCHEDULES = gql`
+  query GetAllDoctorsWithSchedules {
+    getAllDoctorsWithSchedules {
+      idDoctor
+      name
+      username
+      email
+      specialty
+      licenseNumber
+      phone
+      idUser
+      schedules {
+        id
+        dayOfWeek
+        startTime
+        endTime
+        doctorId
+      }
+    }
+  }
+`;
+
 // Schedules
 export const GET_ALL_SCHEDULES = gql`
   query GetAllSchedules {

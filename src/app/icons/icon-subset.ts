@@ -144,6 +144,7 @@ import {
   cilVolumeHigh,
   cilClock,
   cilMedicalCross,
+  cibProbot,
   cilWarning
 } from '@coreui/icons';
 
@@ -297,6 +298,7 @@ export const iconSubset = {
   cilClock,
   cilMedicalCross,
   cilWarning,
+  cibProbot,
   logo,
   signet
 };

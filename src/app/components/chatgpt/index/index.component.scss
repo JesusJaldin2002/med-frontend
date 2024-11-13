@@ -1,0 +1,46 @@
+.logo-generated {
+  display: flex;
+  align-items: center;
+  gap: 8px; // Espaciado entre el texto y el símbolo
+
+  .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #343a40;
+
+    .logo-highlight {
+      color: #ff4757; // Color rojo para "Core"
+    }
+  }
+
+  .logo-symbol {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    background-color: transparent;
+    display: inline-block;
+
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      background-color: #ff4757; // Rojo para la cruz
+    }
+
+    // Brazo vertical de la cruz
+    &:before {
+      width: 4px;
+      height: 16px;
+      left: 6px;
+      top: 0;
+    }
+
+    // Brazo horizontal de la cruz
+    &:after {
+      width: 16px;
+      height: 4px;
+      left: 0;
+      top: 6px;
+    }
+  }
+}

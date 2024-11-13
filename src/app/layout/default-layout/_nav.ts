@@ -59,6 +59,12 @@ export const navItems: CustomNavData[] = [
     iconComponent: { name: 'cil-calendar-check' },
     roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
   },
+  {
+    name: 'Chatgpt',
+    url: '/chatgpt',
+    iconComponent: { name: 'cibProbot' },
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
+  },
 
 
   // {

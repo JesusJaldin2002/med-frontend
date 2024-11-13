@@ -1,0 +1,49 @@
+<div class="container mt-5">
+  <header class="d-flex align-items-center mb-4">
+    <div class="me-3 d-flex align-items-center">
+      <span class="fs-4 fw-bold">Medi<span class="text-danger">Core</span></span>
+      <div class="ms-2 logo-symbol"></div>
+    </div>
+    <div>
+      <h1 class="h3">Bienvenido</h1>
+      <p>Soy el Generador de Citas Automático. Cuéntame tu problema y tu horario disponible.</p>
+    </div>
+  </header>
+
+  <!-- Mostrar historial de conversación -->
+  <div *ngFor="let history of conversationHistory" class="mb-3">
+    <textarea
+      class="form-control mb-2"
+      rows="3"
+      [value]="history.userInput"
+      disabled
+    ></textarea>
+    <div class="mb-2">
+      <p><strong>Asistente:</strong></p>
+      <p [innerHTML]="formatOutput(history.assistantOutput)"></p>
+    </div>
+  </div>
+
+  <!-- Mensaje de espera mientras se genera la respuesta -->
+  <div *ngIf="isTyping" class="mb-3">
+    <p>Generando respuesta...</p>
+  </div>
+
+  <!-- Entrada de texto para nueva pregunta -->
+  <div class="mb-3" *ngIf="!appointmentCreated">
+    <textarea
+      id="userInput"
+      [(ngModel)]="textInput"
+      placeholder="Describe tu problema y tu disponibilidad de horario aquí..."
+      rows="6"
+      class="form-control mb-2"
+      [disabled]="appointmentCreated || isTyping"
+    ></textarea>
+    <button class="btn btn-primary mb-3" (click)="search()" [disabled]="appointmentCreated || isTyping">Enviar</button>
+  </div>
+
+  <!-- Botón para crear una nueva cita -->
+  <button *ngIf="appointmentCreated" class="btn btn-secondary" (click)="resetAppointmentCreation()">
+    Crear Nueva Cita
+  </button>
+</div>

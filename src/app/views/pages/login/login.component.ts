@@ -101,7 +101,7 @@ export class LoginComponent {
   
             console.log('Role guardado:', role);
             console.log('Token guardado:', token);
-            
+            this.fetchUserProfile(token);
             // Limpiar campos y redirigir
             this.username = '';
             this.password = '';

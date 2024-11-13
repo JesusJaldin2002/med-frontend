@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
     templateUrl: './page404.component.html',
     styleUrls: ['./page404.component.scss'],
     standalone: true,
-    imports: [ContainerComponent, RowComponent, ColComponent, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective]
+    imports: [ContainerComponent, RowComponent, ColComponent, ButtonDirective]
 })
 export class Page404Component {
 
