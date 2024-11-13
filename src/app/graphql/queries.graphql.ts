@@ -356,3 +356,38 @@ export const FIND_CONSULTS_BY_APPOINTMENT = gql`
     }
   }
 `;
+
+// Pre evaluation
+export const GET_ALL_PRE_EVALUATIONS = gql`
+  query GetAllPreEvaluations {
+    getAllPreEvaluations {
+      id
+      appointmentId
+      symptoms
+      potentialDiagnosis
+    }
+  }
+`;
+
+export const FIND_PRE_EVALUATION_BY_APPOINTMENT = gql`
+  query FindPreEvaluationByAppointment($appointmentId: Int!) {
+    findPreEvaluationByAppointment(appointmentId: $appointmentId) {
+      id
+      appointmentId
+      symptoms
+      potentialDiagnosis
+    }
+  }
+`;
+
+export const FIND_PRE_EVALUATION_BY_ID = gql`
+  query FindPreEvaluationById($preEvaluationId: Int!) {
+    findPreEvaluationById(preEvaluationId: $preEvaluationId) {
+      id
+      appointmentId
+      symptoms
+      potentialDiagnosis
+    }
+  }
+`;
+

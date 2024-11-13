@@ -60,8 +60,8 @@ export const navItems: CustomNavData[] = [
     roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
   },
   {
-    name: 'Chatgpt',
-    url: '/chatgpt',
+    name: 'Crear Citas',
+    url: '/create-appointments-with-AI',
     iconComponent: { name: 'cibProbot' },
     roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
   },

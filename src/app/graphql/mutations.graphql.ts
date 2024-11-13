@@ -320,3 +320,15 @@ export const DELETE_CONSULT = gql`
     deleteConsult(consultId: $consultId)
   }
 `;
+
+// Pre Evaluation
+export const REGISTER_PRE_EVALUATION = gql`
+  mutation RegisterPreEvaluation($preEvaluationInput: SavePreEvaluationInput!) {
+    registerPreEvaluation(preEvaluationInput: $preEvaluationInput) {
+      id
+      appointmentId
+      symptoms
+      potentialDiagnosis
+    }
+  }
+`;

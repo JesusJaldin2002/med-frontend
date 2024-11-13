@@ -7,6 +7,7 @@ import { Apollo } from 'apollo-angular';
 import {
   AUTHENTICATE_USER,
   REGISTER_APPOINTMENT,
+  REGISTER_PRE_EVALUATION,
 } from '../../../graphql/mutations.graphql';
 import {
   GET_ALL_DOCTORS_WITH_SCHEDULES,
@@ -173,6 +174,7 @@ Tu función principal es:
    - Verifica que la fecha y la hora están disponibles para el doctor, considerando estrictamente las citas existentes en la lista "appointmentsData".
    - Pregunta al usuario si los detalles proporcionados son correctos antes de crear la cita.
    - Si durante la última verificación encuentras que el horario ya está ocupado, informa al paciente y ofrece un horario alternativo que esté disponible.
+   - Finalmente, vuelve a revisar si no existen citas en ese horario, y revisa los datos que van a ser enviados, que esten todos completos.
 
 Al proporcionar los horarios disponibles para el paciente, asegúrate de excluir cualquier horario ocupado según la lista de citas existentes en "appointmentsData", y proporciona solo los horarios disponibles en intervalos de 20 minutos.
 `;
@@ -222,7 +224,15 @@ Al proporcionar los horarios disponibles para el paciente, asegúrate de excluir
         const reason = this.extractReasonFromResponse(this.output);
 
         if (doctorId && time && date && reason) {
-          await this.createAppointment(doctorId, date, time, reason);
+          const appointmentId = await this.createAppointment(
+            doctorId,
+            date,
+            time,
+            reason
+          );
+          if (appointmentId) {
+            await this.createPreEvaluation(appointmentId, reason);
+          }
         } else {
           console.log('Datos extraídos para la cita:', {
             doctorId,
@@ -248,12 +258,12 @@ Al proporcionar los horarios disponibles para el paciente, asegúrate de excluir
     date: string,
     time: string,
     reason: string
-  ) {
+  ): Promise<number | null> {
     if (!this.jwt || !this.patientId || this.patientId <= 0) {
       console.error(
         'No se puede crear la cita sin la autenticación adecuada o patientId inválido.'
       );
-      return;
+      return null;
     }
 
     try {
@@ -277,13 +287,101 @@ Al proporcionar los horarios disponibles para el paciente, asegúrate de excluir
         })
         .toPromise();
 
-      if (result?.data) {
-        console.log('Cita creada con éxito:', result.data);
+      if ((result?.data as any)?.registerAppointment) {
+        console.log(
+          'Cita creada con éxito:',
+          (result?.data as any).registerAppointment
+        );
         alert('Cita creada con éxito.');
         this.appointmentCreated = true;
+        return (result?.data as any).registerAppointment.id;
+      } else {
+        console.error(
+          'No se recibió una respuesta válida al registrar la cita.'
+        );
       }
     } catch (error) {
       console.error('Error al crear la cita:', error);
+    }
+    return null;
+  }
+
+  async createPreEvaluation(appointmentId: number, reason: string) {
+    // Generar la información de la preevaluación usando la IA con el contexto acumulado
+    const openai = new OpenAI({
+      apiKey: `${environment.OPEN_AI_API_KEY}`,
+      dangerouslyAllowBrowser: true,
+    });
+
+    // Construir un contexto basado en el historial de mensajes
+    let conversationContext = 'Contexto acumulado de la conversación previa:\n';
+    for (const message of this.messages) {
+      conversationContext += `${
+        message.role === 'user' ? 'Usuario' : 'Asistente'
+      }: ${message.content}\n`;
+    }
+
+    // Crear el prompt para generar la preevaluación, incluyendo el contexto
+    const prompt = `
+${conversationContext}
+
+Con base en esta conversación, genera una breve descripción de los síntomas observados y un posible diagnóstico preliminar basado únicamente en la siguiente razón proporcionada por el paciente. 
+Esta preevaluación se proporciona como un apoyo para el doctor, y debe limitarse estrictamente a los datos solicitados. No agregues recomendaciones adicionales, aclaraciones sobre la naturaleza del diagnóstico ni ningún texto fuera del formato indicado. 
+Proporciona solo los datos específicos en el siguiente formato:
+Razón: ${reason}
+Responde estrictamente en el siguiente formato:
+- Síntomas: [Descripción breve y clara de los síntomas relevantes al motivo proporcionado]
+- Posible Diagnóstico: [Diagnóstico preliminar basado en la razón proporcionada, y una breve descripcion del por que]
+Evita incluir declaraciones adicionales, recomendaciones generales, advertencias o textos sobre la naturaleza del diagnóstico, tambien formatos como ** o negritas.
+`;
+    try {
+      const response = await openai.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'Eres un asistente que genera pre-evaluaciones médicas.',
+          },
+          { role: 'user', content: prompt },
+        ],
+        model: 'gpt-4o',
+        max_tokens: 500,
+      });
+
+      const aiOutput = response.choices[0].message?.content ?? '';
+      const symptomsMatch = /Síntomas:\s*(.+)/i.exec(aiOutput);
+      const diagnosisMatch = /Posible Diagnóstico:\s*(.+)/i.exec(aiOutput);
+
+      const symptoms = symptomsMatch
+        ? symptomsMatch[1].trim()
+        : 'Descripción no disponible';
+      const potentialDiagnosis = diagnosisMatch
+        ? diagnosisMatch[1].trim()
+        : 'Diagnóstico no disponible';
+
+      // Crear la pre-evaluación
+      const result = await this.apollo
+        .mutate({
+          mutation: REGISTER_PRE_EVALUATION,
+          variables: {
+            preEvaluationInput: {
+              appointmentId,
+              symptoms,
+              potentialDiagnosis,
+            },
+          },
+          context: {
+            headers: {
+              Authorization: `Bearer ${this.jwt}`,
+            },
+          },
+        })
+        .toPromise();
+
+      if (result?.data) {
+        console.log('Pre-evaluación creada con éxito:', result.data);
+      }
+    } catch (error) {
+      console.error('Error al crear la pre-evaluación:', error);
     }
   }
 

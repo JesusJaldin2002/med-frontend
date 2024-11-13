@@ -53,7 +53,7 @@
         </tr>
       </thead>
       <tbody *ngIf="filteredAppointments && filteredAppointments.length > 0; else noAppointments">
-        <tr *ngFor="let appointment of filteredAppointments">
+        <tr *ngFor="let appointment of paginatedAppointments">
           <td>{{ appointment.id }}</td>
           <td>{{ appointment.date }}</td>
           <td>{{ appointment.time }}</td>

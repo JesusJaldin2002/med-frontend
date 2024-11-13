@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { REGISTER_CONSULT } from '../../../graphql/mutations.graphql';
+import { FIND_PRE_EVALUATION_BY_APPOINTMENT } from '../../../graphql/queries.graphql';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../services/toast.service';
@@ -30,6 +31,8 @@ export class CreateComponent implements OnInit {
   message = '';
   type: 'success' | 'error' = 'success';
 
+  preEvaluation: any = null; // Variable para almacenar la preevaluación
+
   constructor(
     private apollo: Apollo,
     private router: Router,
@@ -46,6 +49,9 @@ export class CreateComponent implements OnInit {
 
     // Inicializar la hora de atención con la hora actual en formato HH:MM (24 horas)
     this.consult.attentionTime = this.getCurrentTime();
+
+    // Llamar a la función para obtener la preevaluación
+    this.loadPreEvaluation();
   }
 
   getCurrentTime(): string {
@@ -53,6 +59,29 @@ export class CreateComponent implements OnInit {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
+  }
+
+  loadPreEvaluation() {
+    if (this.appointmentId) {
+      const token = localStorage.getItem('token');
+      this.apollo.query({
+        query: FIND_PRE_EVALUATION_BY_APPOINTMENT,
+        variables: { appointmentId: this.appointmentId },
+        context: {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      }).subscribe({
+        next: (result: any) => {
+          this.preEvaluation = result.data.findPreEvaluationByAppointment;
+        },
+        error: (error) => {
+          console.warn('Error al obtener la preevaluación:', error);
+    
+        }
+      });
+    }
   }
 
   onSubmit() {

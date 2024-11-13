@@ -5,7 +5,7 @@ export const chatgptRoutes: Routes = [
   {
     path: '',
     data: {
-      title: 'ChatgptTest',
+      title: 'Crear Cita con IA',
       roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
     },
     loadComponent: () =>

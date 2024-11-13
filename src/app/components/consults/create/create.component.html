@@ -1,4 +1,6 @@
-<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+<div class="container mt-4">
+  <!-- Mensaje de toaster -->
+  <c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
     <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
       <c-toast-header>
         {{ type === 'success' ? 'Éxito' : 'Error' }}
@@ -8,88 +10,102 @@
       </c-toast-body>
     </c-toast>
   </c-toaster>
-  
-  <div class="container mt-4">
-    <div class="mb-3">
-      <button class="btn btn-secondary" (click)="goBack()">
-        <i class="bi bi-arrow-left"></i> Volver a Citas
-      </button>
-    </div>
-  
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0">Registrar Consulta</h2>
-        <div class="p-2 bg-warning border rounded" style="font-size: 1.25rem;">
-          <strong>Hora de Atención:</strong> {{ consult.attentionTime }}
-        </div>
-      </div>
-  
-    <form (ngSubmit)="onSubmit()" #form="ngForm" novalidate>
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="diagnosis" class="form-label">Diagnóstico</label>
-          <input
-            type="text"
-            id="diagnosis"
-            class="form-control"
-            [(ngModel)]="consult.diagnosis"
-            name="diagnosis"
-            required
-          />
-        </div>
-  
-        <div class="col-md-6 mb-3">
-          <label for="treatment" class="form-label">Tratamiento</label>
-          <input
-            type="text"
-            id="treatment"
-            class="form-control"
-            [(ngModel)]="consult.treatment"
-            name="treatment"
-            required
-          />
-        </div>
-  
-        <div class="col-md-12 mb-3">
-          <label for="observations" class="form-label">Observaciones</label>
-          <textarea
-            id="observations"
-            class="form-control"
-            [(ngModel)]="consult.observations"
-            name="observations"
-            rows="3"
-          ></textarea>
-        </div>
-  
-        <div class="col-md-6 mb-3">
-            <label for="currentWeight" class="form-label d-flex align-items-center">
-              Peso Actual (kg)
-              <span class="ms-2 badge bg-info text-dark">Opcional</span>
-            </label>
-            <input
-              type="number"
-              id="currentWeight"
-              class="form-control"
-              [(ngModel)]="consult.currentWeight"
-              name="currentWeight"
-            />
-          </div>
-  
-        <div class="col-md-6 mb-3">
-            <label for="currentHeight" class="form-label d-flex align-items-center">
-              Altura Actual (m)
-              <span class="ms-2 badge bg-info text-dark">Opcional</span>
-            </label>
-            <input
-              type="number"
-              id="currentHeight"
-              class="form-control"
-              [(ngModel)]="consult.currentHeight"
-              name="currentHeight"
-            />
-          </div>
-      </div>
-  
-      <button type="submit" class="btn btn-success" [disabled]="form.invalid">Registrar Consulta</button>
-    </form>
+
+  <!-- Botón para volver -->
+  <div class="mb-3">
+    <button class="btn btn-secondary" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i> Volver a Citas
+    </button>
   </div>
-  
+
+  <!-- Mostrar la preevaluación si existe -->
+  <div *ngIf="preEvaluation" class="mb-4 p-3 bg-light border rounded">
+    <h5 class="text-primary">Pre-evaluación</h5>
+    <p><strong>Síntomas:</strong> {{ preEvaluation.symptoms }}</p>
+    <p><strong>Diagnóstico Potencial:</strong> {{ preEvaluation.potentialDiagnosis }}</p>
+  </div>
+
+  <!-- Título y hora de atención -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Registrar Consulta</h2>
+    <div class="p-2 bg-warning border rounded" style="font-size: 1.25rem;">
+      <strong>Hora de Atención:</strong> {{ consult.attentionTime }}
+    </div>
+  </div>
+
+  <!-- Formulario para registrar la consulta -->
+  <form (ngSubmit)="onSubmit()" #form="ngForm" novalidate>
+    <div class="row">
+      <!-- Campo de Diagnóstico -->
+      <div class="col-md-6 mb-3">
+        <label for="diagnosis" class="form-label">Diagnóstico</label>
+        <input
+          type="text"
+          id="diagnosis"
+          class="form-control"
+          [(ngModel)]="consult.diagnosis"
+          name="diagnosis"
+          required
+        />
+      </div>
+
+      <!-- Campo de Tratamiento -->
+      <div class="col-md-6 mb-3">
+        <label for="treatment" class="form-label">Tratamiento</label>
+        <input
+          type="text"
+          id="treatment"
+          class="form-control"
+          [(ngModel)]="consult.treatment"
+          name="treatment"
+          required
+        />
+      </div>
+
+      <!-- Campo de Observaciones -->
+      <div class="col-md-12 mb-3">
+        <label for="observations" class="form-label">Observaciones</label>
+        <textarea
+          id="observations"
+          class="form-control"
+          [(ngModel)]="consult.observations"
+          name="observations"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <!-- Campo de Peso Actual -->
+      <div class="col-md-6 mb-3">
+        <label for="currentWeight" class="form-label d-flex align-items-center">
+          Peso Actual (kg)
+          <span class="ms-2 badge bg-info text-dark">Opcional</span>
+        </label>
+        <input
+          type="number"
+          id="currentWeight"
+          class="form-control"
+          [(ngModel)]="consult.currentWeight"
+          name="currentWeight"
+        />
+      </div>
+
+      <!-- Campo de Altura Actual -->
+      <div class="col-md-6 mb-3">
+        <label for="currentHeight" class="form-label d-flex align-items-center">
+          Altura Actual (m)
+          <span class="ms-2 badge bg-info text-dark">Opcional</span>
+        </label>
+        <input
+          type="number"
+          id="currentHeight"
+          class="form-control"
+          [(ngModel)]="consult.currentHeight"
+          name="currentHeight"
+        />
+      </div>
+    </div>
+
+    <!-- Botón para registrar la consulta -->
+    <button type="submit" class="btn btn-success" [disabled]="form.invalid">Registrar Consulta</button>
+  </form>
+</div>

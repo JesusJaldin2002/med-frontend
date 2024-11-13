@@ -76,7 +76,7 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'chatgpt',
+        path: 'create-appointments-with-AI',
         children: chatgptRoutes,
         canActivate: [AuthGuard],
       },
