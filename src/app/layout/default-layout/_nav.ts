@@ -48,17 +48,18 @@ export const navItems: CustomNavData[] = [
     name: 'Sección de Atención',
   },
   {
-    name: 'Citas',
+    name: 'Citas Pendietes',
     url: '/appointments',
     iconComponent: { name: 'cil-calendar' },
     roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
   },
   {
-    name: 'Consultas',
-    url: '/ejemplo-simple',
-    iconComponent: { name: 'cil-notes' },
-    roles: ['ADMINISTRATOR', 'DOCTOR']
+    name: 'Citas Completadas',
+    url: '/appointments/completed',
+    iconComponent: { name: 'cil-calendar-check' },
+    roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
   },
+
 
   // {
   //   name: 'Dropdown Ejemplo',

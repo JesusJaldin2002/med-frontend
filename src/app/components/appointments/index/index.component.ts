@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GET_ALL_APPOINTMENTS, GET_APPOINTMENTS_BY_PATIENT, GET_APPOINTMENTS_BY_DOCTOR } from '../../../graphql/queries.graphql';
+import { GET_ALL_APPOINTMENTS, GET_APPOINTMENTS_BY_PATIENT, GET_APPOINTMENTS_BY_DOCTOR
+, GET_PATIENT_WITH_USER_BY_ID, GET_DOCTOR_WITH_USER_BY_ID } from '../../../graphql/queries.graphql';
 import { DELETE_APPOINTMENT } from '../../../graphql/mutations.graphql';
+import { FIND_CONSULTS_BY_APPOINTMENT } from '../../../graphql/queries.graphql'; // Importación de la nueva consulta
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
@@ -36,6 +38,9 @@ export class IndexComponent implements OnInit, OnDestroy {
   selectedAppointmentId: number | null = null;
   deleteModalVisible: boolean = false;
   role: string | null = null;
+  consultationsByAppointment: { [key: number]: boolean } = {}; // Mapeo de citas a existencia de consultas
+  patientNames: { [key: number]: string } = {}; // Mapeo de IDs de pacientes a nombres
+  doctorNames: { [key: number]: string } = {}; // Mapeo de IDs de doctores a nombres
 
   constructor(
     private apollo: Apollo,
@@ -85,14 +90,34 @@ export class IndexComponent implements OnInit, OnDestroy {
         context: { headers: { Authorization: `Bearer ${token}` } },
       });
     }
-
+  
     if (this.appointmentsQuery) {
       this.querySubscription = this.appointmentsQuery.valueChanges.subscribe(
         ({ data, loading }) => {
           this.loading = loading;
           this.appointments = data?.getAllAppointments || data?.getAppointmentsByDoctor || data?.getAppointmentsByPatient || [];
-          this.filteredAppointments = [...this.appointments];
+  
+          // Filtrar citas con STATUS = 'pending'
+          this.filteredAppointments = this.appointments.filter(appointment => appointment.status === 'pending');
+  
+          // Ordenar por fecha y luego por ID
+          this.filteredAppointments.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            if (dateA < dateB) return -1;
+            if (dateA > dateB) return 1;
+            return a.id - b.id; // Si las fechas son iguales, ordenar por ID
+          });
+  
           this.totalAppointments = this.filteredAppointments.length;
+  
+          // Verificar la existencia de consultas y cargar nombres de pacientes y doctores
+          this.filteredAppointments.forEach(appointment => {
+            this.checkConsultExistence(appointment.id);
+            this.loadPatientName(appointment.patientId);
+            this.loadDoctorName(appointment.doctorId);
+          });
+  
           this.updateCurrentPageAppointments();
         },
         (error) => {
@@ -103,6 +128,62 @@ export class IndexComponent implements OnInit, OnDestroy {
     } else {
       console.warn('Appointments query is undefined. Unable to load appointments.');
     }
+  }
+
+  loadPatientName(patientId: number) {
+    const token = localStorage.getItem('token');
+
+    if (!this.patientNames[patientId]) {
+      this.apollo.query<any>({
+        query: GET_PATIENT_WITH_USER_BY_ID,
+        variables: { patientId },
+        context: { headers: { Authorization: `Bearer ${token}` } },
+      }).subscribe({
+        next: ({ data }) => {
+          this.patientNames[patientId] = data?.getPatientWithUserById?.name || 'Desconocido';
+        },
+        error: () => {
+          this.patientNames[patientId] = 'Desconocido';
+        }
+      });
+    }
+  }
+
+  loadDoctorName(doctorId: number) {
+    const token = localStorage.getItem('token');
+
+    if (!this.doctorNames[doctorId]) {
+      this.apollo.query<any>({
+        query: GET_DOCTOR_WITH_USER_BY_ID,
+        variables: { doctorId },
+        context: { headers: { Authorization: `Bearer ${token}` } },
+      }).subscribe({
+        next: ({ data }) => {
+          this.doctorNames[doctorId] = data?.getDoctorWithUserById?.name || 'Desconocido';
+        },
+        error: () => {
+          this.doctorNames[doctorId] = 'Desconocido';
+        }
+      });
+    }
+  }
+
+  checkConsultExistence(appointmentId: number) {
+    const token = localStorage.getItem('token');
+
+    this.apollo.query<any>({
+      query: FIND_CONSULTS_BY_APPOINTMENT,
+      variables: { appointmentId },
+      context: { headers: { Authorization: `Bearer ${token}` } },
+    }).subscribe({
+      next: ({ data }) => {
+        this.consultationsByAppointment[appointmentId] = !!data.findConsultsByAppointment;
+      },
+      error: (error) => {
+        // Maneja el error de manera controlada
+        this.consultationsByAppointment[appointmentId] = false;
+      }
+    });
   }
 
   filterAppointments() {
@@ -156,8 +237,12 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.router.navigate(['/appointments/create']);
   }
 
-  editAppointment(id: number): void {
-    this.router.navigate(['/appointments/edit', id]);
+  openConsult(appointmentId: number): void {
+    this.router.navigate(['/consults/create', appointmentId]);
+  }
+
+  viewConsult(appointmentId: number): void {
+    this.router.navigate(['/consults/view', appointmentId]);
   }
 
   confirmDeleteAppointment(id: number): void {

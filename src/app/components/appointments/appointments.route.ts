@@ -6,7 +6,7 @@ export const appointmentRoutes: Routes = [
     path: '',
     data: {
       title: 'Citas',
-      roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR','PATIENT']
+      roles: ['ADMINISTRATOR', 'RECEPTIONIST', 'DOCTOR', 'PATIENT'],
     },
     loadComponent: () =>
       import('./index/index.component').then((m) => m.IndexComponent),
@@ -18,20 +18,18 @@ export const appointmentRoutes: Routes = [
       import('./create/create.component').then((m) => m.CreateComponent),
     data: {
       title: 'Crear Cita',
-      roles: ['ADMINISTRATOR', 'RECEPTIONIST']
+      roles: ['ADMINISTRATOR', 'RECEPTIONIST'],
     },
     canActivate: [AuthGuard],
   },
   {
-    path: 'edit/:appointmentId',
+    path: 'completed',
     loadComponent: () =>
-      import('./edit/edit.component').then((m) => m.EditComponent),
+      import('./index-completed/index-completed.component').then((m) => m.IndexCompletedComponent),
     data: {
-      title: 'Editar Cita',
-      roles: ['ADMINISTRATOR', 'RECEPTIONIST']
+      title: 'Citas Completadas',
+      roles: ['ADMINISTRATOR', 'RECEPTIONIST','DOCTOR', 'PATIENT'],
     },
     canActivate: [AuthGuard],
   },
-  
 ];
-

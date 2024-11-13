@@ -1,97 +1,103 @@
 <c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
-    <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
-      <c-toast-header>
-        Notificación
-      </c-toast-header>
-      <c-toast-body>
-        <strong>{{ message }}</strong>
-      </c-toast-body>
-    </c-toast>
-  </c-toaster>
-  
-  <c-modal id="deleteConfirmModal" [visible]="deleteModalVisible" (visibleChange)="deleteModalVisible = $event">
-    <c-modal-header>
-      <h5 cModalTitle>Confirmar Eliminación</h5>
-    </c-modal-header>
-    <c-modal-body>
-      ¿Estás seguro de que deseas eliminar esta cita?
-    </c-modal-body>
-    <c-modal-footer>
-      <button (click)="deleteModalVisible = false" cButton color="secondary">Cancelar</button>
-      <button (click)="performDeleteAppointment()" cButton color="primary">Confirmar</button>
-    </c-modal-footer>
-  </c-modal>
-  
-  <div class="container-fluid mt-4">
-    <!-- Input de búsqueda -->
-    <div class="mb-3">
-      <input type="text" class="form-control" placeholder="Buscar cita..." [(ngModel)]="searchText" (input)="filterAppointments()" />
-    </div>
-  
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 class="mb-0">Lista de Citas</h2>
-      <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-primary" (click)="createAppointment()">
-        <i class="bi bi-plus-lg me-1"></i> Añadir Cita
-      </button>
-    </div>
-  
-    <div class="table-responsive">
-      <table class="table table-hover table-bordered">
-        <thead class="table-light text-center">
-          <tr>
-            <th>ID</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Estado</th>
-            <th>Motivo</th>
-            <th>ID Paciente</th>
-            <th>ID Doctor</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody *ngIf="filteredAppointments && filteredAppointments.length > 0; else noAppointments">
-          <tr *ngFor="let appointment of filteredAppointments">
-            <td>{{ appointment.id }}</td>
-            <td>{{ appointment.date }}</td>
-            <td>{{ appointment.time }}</td>
-            <td>{{ appointment.status }}</td>
-            <td>{{ appointment.reason }}</td>
-            <td>{{ appointment.patientId }}</td>
-            <td>{{ appointment.doctorId }}</td>
-            <td class="text-center">
-              <div class="btn-group">
-                <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-sm btn-outline-primary" (click)="editAppointment(appointment.id)">
-                  <i class="bi bi-pencil"></i> Editar
-                </button>
-                <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-sm btn-outline-danger" (click)="confirmDeleteAppointment(appointment.id)">
-                  <i class="bi bi-trash"></i> Eliminar
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- Mensaje cuando no hay citas -->
-      <ng-template #noAppointments>
-        <div class="text-center mt-4">
-          <p>No hay citas registradas.</p>
-        </div>
-      </ng-template>
-    </div>
-  
-    <!-- Paginación alineada a la derecha -->
-    <div class="d-flex justify-content-end mt-2">
-      <c-pagination aria-label="Page navigation example" size="sm" align="end">
-        <li cPageItem [disabled]="currentPage === 1">
-          <a cPageLink (click)="onPageChange(currentPage - 1)" aria-label="Previous">&laquo;</a>
-        </li>
-        <li *ngFor="let page of getPages()" cPageItem [active]="currentPage === page">
-          <a cPageLink (click)="onPageChange(page)">{{ page }}</a>
-        </li>
-        <li cPageItem [disabled]="currentPage === getTotalPages()">
-          <a cPageLink (click)="onPageChange(currentPage + 1)" aria-label="Next">&raquo;</a>
-        </li>
-      </c-pagination>
-    </div>
+  <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+    <c-toast-header>
+      Notificación
+    </c-toast-header>
+    <c-toast-body>
+      <strong>{{ message }}</strong>
+    </c-toast-body>
+  </c-toast>
+</c-toaster>
+
+<c-modal id="deleteConfirmModal" [visible]="deleteModalVisible" (visibleChange)="deleteModalVisible = $event">
+  <c-modal-header>
+    <h5 cModalTitle>Confirmar Eliminación</h5>
+  </c-modal-header>
+  <c-modal-body>
+    ¿Estás seguro de que deseas eliminar esta cita?
+  </c-modal-body>
+  <c-modal-footer>
+    <button (click)="deleteModalVisible = false" cButton color="secondary">Cancelar</button>
+    <button (click)="performDeleteAppointment()" cButton color="primary">Confirmar</button>
+  </c-modal-footer>
+</c-modal>
+
+<div class="container-fluid mt-4">
+  <!-- Input de búsqueda -->
+  <div class="mb-3">
+    <input type="text" class="form-control" placeholder="Buscar cita..." [(ngModel)]="searchText"
+      (input)="filterAppointments()" />
   </div>
-  
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Lista de Citas Pendientes
+    </h2>
+    <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-primary"
+      (click)="createAppointment()">
+      <i class="bi bi-plus-lg me-1"></i> Añadir Cita
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered">
+      <thead class="table-light text-center">
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Estado</th>
+          <th>Motivo</th>
+          <th>ID Paciente</th>
+          <th>ID Doctor</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="filteredAppointments && filteredAppointments.length > 0; else noAppointments">
+        <tr *ngFor="let appointment of filteredAppointments">
+          <td>{{ appointment.id }}</td>
+          <td>{{ appointment.date }}</td>
+          <td>{{ appointment.time }}</td>
+          <td>{{ appointment.status === 'pending' ? 'Pendiente' : appointment.status }}</td>
+          <td>{{ appointment.reason }}</td>
+          <td>{{ appointment.patientId }} - {{ patientNames[appointment.patientId] || 'Cargando...' }}</td>
+          <td>{{ appointment.doctorId }} - {{ doctorNames[appointment.doctorId] || 'Cargando...' }}</td>
+          <td class="text-center">
+            <div class="btn-group">
+              <button *ngIf="role === 'ADMINISTRATOR' || role === 'RECEPTIONIST'" class="btn btn-sm btn-outline-danger"
+                (click)="confirmDeleteAppointment(appointment.id)">
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+              <button *ngIf="role === 'ADMINISTRATOR' || role === 'DOCTOR'" class="btn btn-sm"
+                [ngClass]="consultationsByAppointment[appointment.id] ? 'btn-outline-info' : 'btn-outline-success'"
+                (click)="consultationsByAppointment[appointment.id] ? viewConsult(appointment.id) : openConsult(appointment.id)">
+                <i class="bi" [ngClass]="consultationsByAppointment[appointment.id] ? 'bi-eye' : 'bi-file-plus'"></i>
+                {{ consultationsByAppointment[appointment.id] ? 'Ver Consulta' : 'Abrir Consulta' }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- Mensaje cuando no hay citas -->
+    <ng-template #noAppointments>
+      <div class="text-center mt-4">
+        <p>No hay citas registradas.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Paginación alineada a la derecha -->
+  <div class="d-flex justify-content-end mt-2">
+    <c-pagination aria-label="Page navigation example" size="sm" align="end">
+      <li cPageItem [disabled]="currentPage === 1">
+        <a cPageLink (click)="onPageChange(currentPage - 1)" aria-label="Previous">&laquo;</a>
+      </li>
+      <li *ngFor="let page of getPages()" cPageItem [active]="currentPage === page">
+        <a cPageLink (click)="onPageChange(page)">{{ page }}</a>
+      </li>
+      <li cPageItem [disabled]="currentPage === getTotalPages()">
+        <a cPageLink (click)="onPageChange(currentPage + 1)" aria-label="Next">&raquo;</a>
+      </li>
+    </c-pagination>
+  </div>
+</div>

@@ -23,7 +23,10 @@ export const LOGOUT_MUTATION = gql`
 
 // Patients
 export const REGISTER_PATIENT = gql`
-  mutation RegisterPatient($patientInput: SavePatientInput!, $userInput: SaveUserInput!) {
+  mutation RegisterPatient(
+    $patientInput: SavePatientInput!
+    $userInput: SaveUserInput!
+  ) {
     registerPatient(patientInput: $patientInput, userInput: $userInput) {
       id
       dateOfBirth
@@ -36,8 +39,16 @@ export const REGISTER_PATIENT = gql`
 `;
 
 export const UPDATE_PATIENT = gql`
-  mutation UpdatePatient($patientId: Int!, $patientInput: SavePatientInput!, $userInput: SaveUserInput!) {
-    updatePatient(patientId: $patientId, patientInput: $patientInput, userInput: $userInput) {
+  mutation UpdatePatient(
+    $patientId: Int!
+    $patientInput: SavePatientInput!
+    $userInput: SaveUserInput!
+  ) {
+    updatePatient(
+      patientId: $patientId
+      patientInput: $patientInput
+      userInput: $userInput
+    ) {
       id
       dateOfBirth
       gender
@@ -56,7 +67,10 @@ export const DELETE_PATIENT = gql`
 
 // Doctors
 export const REGISTER_DOCTOR = gql`
-  mutation RegisterDoctor($doctorInput: SaveDoctorInput!, $userInput: SaveUserInput!) {
+  mutation RegisterDoctor(
+    $doctorInput: SaveDoctorInput!
+    $userInput: SaveUserInput!
+  ) {
     registerDoctor(doctorInput: $doctorInput, userInput: $userInput) {
       id
       specialty
@@ -68,8 +82,16 @@ export const REGISTER_DOCTOR = gql`
 `;
 
 export const UPDATE_DOCTOR = gql`
-  mutation UpdateDoctor($doctorId: Int!, $doctorInput: SaveDoctorInput!, $userInput: SaveUserInput!) {
-    updateDoctor(doctorId: $doctorId, doctorInput: $doctorInput, userInput: $userInput) {
+  mutation UpdateDoctor(
+    $doctorId: Int!
+    $doctorInput: SaveDoctorInput!
+    $userInput: SaveUserInput!
+  ) {
+    updateDoctor(
+      doctorId: $doctorId
+      doctorInput: $doctorInput
+      userInput: $userInput
+    ) {
       id
       specialty
       licenseNumber
@@ -99,7 +121,10 @@ export const REGISTER_SCHEDULE = gql`
 `;
 
 export const UPDATE_SCHEDULE = gql`
-  mutation UpdateSchedule($scheduleId: Int!, $scheduleInput: SaveScheduleInput!) {
+  mutation UpdateSchedule(
+    $scheduleId: Int!
+    $scheduleInput: SaveScheduleInput!
+  ) {
     updateSchedule(scheduleId: $scheduleId, scheduleInput: $scheduleInput) {
       id
       dayOfWeek
@@ -135,8 +160,14 @@ export const REGISTER_MEDICAL_RECORD = gql`
 `;
 
 export const UPDATE_MEDICAL_RECORD = gql`
-  mutation UpdateMedicalRecord($medicalRecordId: Int!, $medicalRecordInput: SaveMedicalRecordInput!) {
-    updateMedicalRecord(medicalRecordId: $medicalRecordId, medicalRecordInput: $medicalRecordInput) {
+  mutation UpdateMedicalRecord(
+    $medicalRecordId: Int!
+    $medicalRecordInput: SaveMedicalRecordInput!
+  ) {
+    updateMedicalRecord(
+      medicalRecordId: $medicalRecordId
+      medicalRecordInput: $medicalRecordInput
+    ) {
       id
       allergies
       chronicConditions
@@ -171,8 +202,14 @@ export const REGISTER_MEDICAL_NOTE = gql`
 `;
 
 export const UPDATE_MEDICAL_NOTE = gql`
-  mutation UpdateMedicalNote($medicalNoteId: Int!, $medicalNoteInput: SaveMedicalNoteInput!) {
-    updateMedicalNote(medicalNoteId: $medicalNoteId, medicalNoteInput: $medicalNoteInput) {
+  mutation UpdateMedicalNote(
+    $medicalNoteId: Int!
+    $medicalNoteInput: SaveMedicalNoteInput!
+  ) {
+    updateMedicalNote(
+      medicalNoteId: $medicalNoteId
+      medicalNoteInput: $medicalNoteInput
+    ) {
       id
       noteType
       details
@@ -204,8 +241,14 @@ export const REGISTER_APPOINTMENT = gql`
 `;
 
 export const UPDATE_APPOINTMENT = gql`
-  mutation UpdateAppointment($appointmentId: Int!, $appointmentInput: AppointmentInput!) {
-    updateAppointment(appointmentId: $appointmentId, appointmentInput: $appointmentInput) {
+  mutation UpdateAppointment(
+    $appointmentId: Int!
+    $appointmentInput: AppointmentInput!
+  ) {
+    updateAppointment(
+      appointmentId: $appointmentId
+      appointmentInput: $appointmentInput
+    ) {
       id
       date
       time
@@ -220,5 +263,60 @@ export const UPDATE_APPOINTMENT = gql`
 export const DELETE_APPOINTMENT = gql`
   mutation DeleteAppointment($appointmentId: Int!) {
     deleteAppointment(appointmentId: $appointmentId)
+  }
+`;
+
+export const UPDATE_APPOINTMENT_STATUS = gql`
+  mutation UpdateAppointmentStatus($appointmentId: Int!, $status: String!) {
+    updateAppointmentStatus(appointmentId: $appointmentId,status: $status) {
+      id
+      date
+      time
+      status
+      reason
+      patientId
+      doctorId
+    }
+  }
+`;
+
+// Consults
+export const REGISTER_CONSULT = gql`
+  mutation RegisterConsult($consultInput: SaveConsultInput!) {
+    registerConsult(consultInput: $consultInput) {
+      id
+      date
+      diagnosis
+      treatment
+      observations
+      currentWeight
+      currentHeight
+      medicalRecordId
+      appointmentId
+      attentionTime
+    }
+  }
+`;
+
+export const UPDATE_CONSULT = gql`
+  mutation UpdateConsult($consultId: Int!, $consultInput: SaveConsultInput!) {
+    updateConsult(consultId: $consultId, consultInput: $consultInput) {
+      id
+      date
+      diagnosis
+      treatment
+      observations
+      currentWeight
+      currentHeight
+      medicalRecordId
+      appointmentId
+      attentionTime
+    }
+  }
+`;
+
+export const DELETE_CONSULT = gql`
+  mutation DeleteConsult($consultId: Int!) {
+    deleteConsult(consultId: $consultId)
   }
 `;

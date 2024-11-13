@@ -1,0 +1,103 @@
+<c-toaster *ngIf="visible" [placement]="'top-end'" class="p-3">
+    <c-toast [visible]="visible" [class.bg-success]="type === 'success'" [class.bg-danger]="type === 'error'">
+      <c-toast-header>
+        Notificación
+      </c-toast-header>
+      <c-toast-body>
+        <strong>{{ message }}</strong>
+      </c-toast-body>
+    </c-toast>
+  </c-toaster>
+  
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Volver atrás
+      </button>
+      <button *ngIf="role === 'ADMINISTRATOR'" class="btn btn-danger" (click)="confirmDeleteConsult()">
+        <i class="bi bi-trash"></i> Eliminar Consulta
+      </button>
+    </div>
+  
+    <div *ngIf="loading" class="text-center mt-4">
+      <p>Cargando...</p>
+    </div>
+  
+    <div *ngIf="!loading && consultData && appointmentData && patientData && doctorData">
+      <!-- Información de la Consulta -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Detalles de la Consulta</h4>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <p><strong>Fecha de la Consulta:</strong> {{ consultData.date }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Motivo:</strong> {{ appointmentData.reason }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Diagnóstico:</strong> {{ consultData.diagnosis }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Tratamiento:</strong> {{ consultData.treatment }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Observaciones:</strong> {{ consultData.observations }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Tiempo de Atención:</strong> {{ consultData.attentionTime }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Información del Paciente -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white">
+          <h4 class="mb-0">Información del Paciente</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Nombre:</strong> {{ patientData.name }}</p>
+          <p><strong>Género:</strong> {{ patientData.gender }}</p>
+          <p><strong>Fecha de Nacimiento:</strong> {{ patientData.dateOfBirth }}</p>
+          <p><strong>Email:</strong> {{ patientData.email }}</p>
+          <p><strong>Teléfono:</strong> {{ patientData.phone }}</p>
+        </div>
+      </div>
+  
+      <!-- Información del Doctor -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+          <h4 class="mb-0">Información del Doctor</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Nombre:</strong> {{ doctorData.name }}</p>
+          <p><strong>Especialidad:</strong> {{ doctorData.specialty }}</p>
+          <p><strong>Email:</strong> {{ doctorData.email }}</p>
+          <p><strong>Teléfono:</strong> {{ doctorData.phone }}</p>
+          <p><strong>Número de Licencia:</strong> {{ doctorData.licenseNumber }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngIf="!loading && !consultData" class="text-center mt-4">
+      <p>No se encontraron datos para esta consulta.</p>
+    </div>
+  
+    <!-- Modal de confirmación de eliminación -->
+    <c-modal id="deleteConfirmModal" [visible]="deleteModalVisible" (visibleChange)="deleteModalVisible = $event">
+      <c-modal-header>
+        <h5 cModalTitle>Confirmar Eliminación</h5>
+      </c-modal-header>
+      <c-modal-body>
+        ¿Estás seguro de que deseas eliminar esta consulta?
+      </c-modal-body>
+      <c-modal-footer>
+        <button (click)="deleteModalVisible = false" cButton color="secondary">Cancelar</button>
+        <button (click)="performDeleteConsult()" cButton color="primary">Confirmar</button>
+      </c-modal-footer>
+    </c-modal>
+  </div>
+  

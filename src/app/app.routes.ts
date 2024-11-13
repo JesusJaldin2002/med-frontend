@@ -7,6 +7,7 @@ import { scheduleRoutes } from './components/schedules/schedules.route';
 import { medicalRecordRoutes } from './components/medical_records/medicalRecords.route';
 import { medicalNoteRoutes } from './components/medical_notes/medicalNotes.route';
 import { appointmentRoutes } from './components/appointments/appointments.route';
+import { consultRoutes } from './components/consults/consults.route';
 import { Page404Component } from './views/pages/page404/page404.component';
 
 export const routes: Routes = [
@@ -66,6 +67,11 @@ export const routes: Routes = [
       {
         path: 'appointments',
         children: appointmentRoutes,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'consults',
+        children: consultRoutes,
         canActivate: [AuthGuard],
       },
     ],

@@ -251,3 +251,86 @@ export const GET_APPOINTMENTS_BY_DOCTOR = gql`
     }
   }
 `;
+
+export const GET_APPOINTMENT_BY_ID = gql`
+  query GetAppointmentById($appointmentId: Int!) {
+    getAppointmentById(appointmentId: $appointmentId) {
+      id
+      date
+      time
+      status
+      reason
+      patientId
+      doctorId
+    }
+  }
+`;
+
+// Consults
+export const GET_ALL_CONSULTS = gql`
+  query GetAllConsults {
+    getAllConsults {
+      id
+      date
+      diagnosis
+      treatment
+      observations
+      currentWeight
+      currentHeight
+      medicalRecordId
+      appointmentId
+      attentionTime
+    }
+  }
+`;
+
+export const FIND_CONSULTS_BY_DOCTOR = gql`
+  query FindConsultsByDoctor($doctorId: Int!) {
+    findConsultsByDoctor(doctorId: $doctorId) {
+      id
+      date
+      diagnosis
+      treatment
+      observations
+      currentWeight
+      currentHeight
+      medicalRecordId
+      appointmentId
+      attentionTime
+    }
+  }
+`;
+
+export const FIND_CONSULTS_BY_PATIENT = gql`
+  query FindConsultsByPatient($patientId: Int!) {
+    findConsultsByPatient(patientId: $patientId) {
+      id
+      date
+      diagnosis
+      treatment
+      observations
+      currentWeight
+      currentHeight
+      medicalRecordId
+      appointmentId
+      attentionTime
+    }
+  }
+`;
+
+export const FIND_CONSULTS_BY_APPOINTMENT = gql`
+  query FindConsultsByAppointment($appointmentId: Int!) {
+    findConsultsByAppointment(appointmentId: $appointmentId) {
+      id
+      date
+      diagnosis
+      treatment
+      observations
+      currentWeight
+      currentHeight
+      medicalRecordId
+      appointmentId
+      attentionTime
+    }
+  }
+`;
