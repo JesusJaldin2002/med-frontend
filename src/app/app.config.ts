@@ -8,6 +8,7 @@ import {
   withRouterConfig,
   withViewTransitions
 } from '@angular/router';
+import { environment } from '../environments/environment'
 
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
@@ -38,7 +39,7 @@ export const appConfig: ApplicationConfig = {
 
       return {
         link: httpLink.create({
-          uri: 'http://localhost:9191/api/graphql',
+          uri: environment.BACKEND_URL,
         }),
         cache: new InMemoryCache(),
       };
